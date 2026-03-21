@@ -1,0 +1,29 @@
+p {
+	font-family: "Oswald", "Roboto", Verdana, sans-serif;
+}
+
+input {
+	font-family: "Oswald", "Roboto", Verdana, sans-serif;
+}
+
+button {
+	font-family:  "Roboto", Verdana, sans-serif;
+}
+
+th {
+	font-family: "Neucha", "Trebuchet MS", sans-serif;
+	font-weight: normal;
+}
+
+.pressed {
+	background: lime;
+}
+
+#settings {
+	z-index: 1;
+	background-color: gray;
+	position: absolute;
+	top: 40px;
+	height: 160px;
+	width: 300px;
+}

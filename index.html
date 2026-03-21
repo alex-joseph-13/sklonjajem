@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Склоняем</title></title>
+    <link rel="stylesheet" href="./style.css">
+    <!link rel="icon" href="./favicon.ico" type="image/x-icon">
+	
+	<script src="grammar.js"></script>
+	<script src="script.js" defer></script>
+  </head>
+  <body>
+	
+    <main>
+	
+		<div id="quiz_tab">
+		
+			<button id="settings_button" onclick="click_settings_button()">Start Practicing</button>
+		
+			<p id=english_sentence></p>
+			<p id=russian_lemma></p>
+			<p id=help></p>
+			<p id=russian_sentence></p>
+			
+			<p id="correct" hidden>Correct!</p>
+			<p id="incorrect" hidden>Incorrect!</p>
+			
+			<div id="settings"></div>
+			
+		</div>
+		
+		
+		<div id="debug_tab" hidden>
+			<table>
+			  <tbody id="tbody">
+				<tr>
+					<th></th>
+					<th>singular</th>
+					<th>plural</th>
+				</tr>
+				<tr>
+					<th>nominative</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>genitive</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>dative</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>accusative</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>instrumental</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>prepositional</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>English:</th>
+					<th></th>
+					<th></th>
+				</tr>
+			  </tbody>
+			</table>
+			
+			<button onclick="nextNoun()">next noun</button>
+		
+		</div>
+		
+		
+		
+		
+		<button onclick="quiz_tab.hidden = !quiz_tab.hidden; debug_tab.hidden = !debug_tab.hidden">dev mode</button>
+		
+		
+    </main>
+    
+  </body>
+  
+</html>
