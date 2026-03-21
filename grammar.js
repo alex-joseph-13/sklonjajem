@@ -736,6 +736,8 @@ regularImperfectiveVerbs = [
 	
 ]
 
+const intransitiveVerbs = regularImperfectiveVerbs.filter(v => v.transitivity == 0);
+
 
 regularNouns = [
 
@@ -748,12 +750,12 @@ regularNouns = [
 	new Noun('вопрос','question'),
 	new Noun('эсэмэска','text message'),
 	new Noun('идиот','(male) idiot',{animate:true}),
+	new Noun('лицо','face'),
 	new Noun('рука','hand'),
 	new Noun('дело','thing'),
 	new Noun('голова','head'),
 	new Noun('слово','word'),
 	new Noun('место','place'),
-	new Noun('лицо','face'),
 	new Noun('мама','mom',{animate:true}),
 	
 	new Noun('девушка','girl',{animate:true,genPl:"девушек"}),
@@ -863,7 +865,6 @@ nounExercises = [
 			constructor(noun, number) {
 				super(noun, 0, number);
 				
-				const intransitiveVerbs = regularImperfectiveVerbs.filter(v => v.transitivity == 0);
 				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
 				
 				this.englishSentence = "_ " + ((number==0) ? verb.translation.singular() : verb.translation.base) + ".";
@@ -915,11 +916,26 @@ nounExercises = [
 				
 				const c = Math.floor(Math.random() * 2) //choice of object
 				
-				this.englishSentence = "Send " + ["money","a message"][c] + " to _.";
+				this.englishSentence = "Send " + ["money","a text"][c] + " to _.";
 				this.englishWord = "the " + noun.translation.num(number);
 				this.russianSentence = "Отправлай " + ["деньги","эсэмэску"][c] + " _.";
 			}
 		},
+		
+		// the (noun) needs to (verb)
+		class extends NounExercise {
+			constructor(noun, number) {
+				super(noun, 3, number);
+				
+				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
+				
+				this.englishSentence = ((number==0 || noun.translation instanceof EnglishUncountableNoun) ? "_ needs to " : "_ need to ") + verb.translation.toString();
+				this.englishWord = "the " + noun.translation.num(number);
+				this.russianSentence = "_ надо " + verb.inf;
+				
+				
+			}
+		}
 	],
 	
 	// prepositional templates

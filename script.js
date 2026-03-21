@@ -201,6 +201,7 @@ function submitExercise() {
 	} else {
 		$("incorrect").hidden = false;
 		correct_answer = document.createElement("b");
+		correct_answer.style.color = "red";
 		correct_answer.textContent = currentExercise.russianWord;
 		answer_box.replaceWith(correct_answer);
 		setTimeout(() => {
