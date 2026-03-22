@@ -1,6 +1,7 @@
 
 function prepForm(prep, noun) {
 	noun = noun.replace(/[ьъ]/g,'');
+	noun = noun.replace('ф','в');
 	if (countVowels(noun) <= 1 && !vowels.includes(noun[0]) && !vowels.includes(noun[1]) ) {
 		return prep + 'о';
 	}
@@ -144,7 +145,7 @@ nounExercises = [
 		// (person) is (doing verb) with (anim. noun)
 		class extends NounExercise {
 			constructor(noun, number) {
-				super(noun, 4, number);
+				super(noun, 5, number);
 				
 				const p = Math.floor(Math.random()*8);
 				
