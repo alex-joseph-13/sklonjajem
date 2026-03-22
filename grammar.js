@@ -563,8 +563,16 @@ class EnglishNoun {
 	
 	singular;
 	plural;
+	extra;
 	
 	constructor(singular, plural){
+		
+		this.extra = '';
+		if (singular[singular.length-1] == ')' ) {
+			this.extra = ' ' + singular.substring(singular.indexOf('(')+1, singular.indexOf(')'));
+			singular = singular.substr(0, singular.indexOf('(')-1);
+		}
+		
 		this.singular = singular;
 		
 		if (plural == '-'){
@@ -585,26 +593,26 @@ class EnglishNoun {
 	}
 	
 	toString() {
-		return this.singular;
+		return this.num(0);
 	}
 	
 	// 0=singular, 1=plural
 	num(number) {
-		return (number==0) ? this.singular : this.plural;
+		return ((number==0) ? this.singular : this.plural) + this.extra;
 	}
 	
 	possessive(number) {
 		if (number == 1 && this.plural[this.plural.length-1] == 's'){
-			return this.plural + "'";
+			return this.plural + "'" + this.extra;
 		}
-		return this.num(number) + "'s";
+		return this.num(number) + "'s" + this.extra;
 	}
 	
 	indefinite(number) {
 		if (number == 0) {
-			return (englishVowels.includes(this.singular[0]) ? "an " : "a ") + this.singular;
+			return (englishVowels.includes(this.singular[0]) ? "an " : "a ") + this.num(0);
 		} else {
-			return "some " + this.plural;
+			return "some " + this.num(1);
 		}
 	}
 }

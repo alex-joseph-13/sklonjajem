@@ -1,5 +1,5 @@
 
-englishVerbs = [
+let englishVerbs = [
 	
 	new EnglishVerb("work"),
 	new EnglishVerb("eat", {past:"ate",participle:"eaten"}),
@@ -22,8 +22,7 @@ englishVerbs = [
 englishVerbs.sort();
 
 
-
-regularImperfectiveVerbs = [
+let regularImperfectiveVerbs = [
 
 	new ImperfectiveVerb("работать", "work", 0),
 	new ImperfectiveVerb("обедать", "eat lunch", 0),
@@ -59,7 +58,7 @@ let regularNouns = [
 	new Noun('здание','building',{stress:1}),
 	new Noun('школа','school',{stress:1}),
 	new Noun('вопрос','question'),
-	new Noun('идиот','(male) idiot',{animate:true}),
+	new Noun('идиот','idiot (♂)',{animate:true}),
 	new Noun('лицо','face',{pluralStress:1}),
 	new Noun('рука','hand',{stressChanges:{1:1,6:1}}),
 	new Noun('дело','thing',{stress:1,pluralStress:-1}),
@@ -72,7 +71,7 @@ let regularNouns = [
 	new Noun('врач','doctor',{animate:true,pluralStress:-1}),
 	
 	new Noun('девушка','girl',{animate:true,stress:1,genPl:"девушек"}),
-	new Noun('идиотка','(female) idiot',{animate:true,stress:3,genPl:"идиоток"}),
+	new Noun('идиотка','idiot (♀)',{animate:true,stress:3,genPl:"идиоток"}),
 	new Noun('эсэмэска','text message',{stress:3,genPl:'эсэмэсок'}),
 	
 ]

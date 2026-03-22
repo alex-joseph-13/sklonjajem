@@ -45,8 +45,8 @@ nounExercises = [
 				const c = Math.floor(Math.random() * 8) //choice of pronoun
 				
 				this.englishSentence = englishPronouns[0][c] + ([2,6,7].includes(c) ? " has " : " have ") + "_.";
-				this.englishWord = ((number == 0) ? "a " : "some ") + noun.translation.num(number);
-				this.russianSentence = ([2,5,6,7].includes(c) ? "У н" : "У ") + russianPronouns[1][c] + " есть _.";
+				this.englishWord = noun.translation.indefinite(number);
+				this.russianSentence = ([2,5,6,7].includes(c) ? "У н" : "У ") + russianPronouns[2][c] + " есть _.";
 			}
 		},
 		
@@ -57,7 +57,7 @@ nounExercises = [
 				
 				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
 				
-				this.englishSentence = "_ " + ((number==0) ? verb.translation.singular() : verb.translation.base) + ".";
+				this.englishSentence = "_ " + ((number==0 || noun instanceof EnglishUncountableNoun) ? verb.translation.singular() : verb.translation.base) + ".";
 				this.englishWord = "The " + noun.translation.num(number);
 				this.russianSentence = "_ " + verb.present(2 + 3*number) + ".";
 			}
@@ -93,7 +93,7 @@ nounExercises = [
 				
 				this.englishSentence = englishPronouns[0][c] + ([2,6,7].includes(c) ? " doesn't have " : " don't have ") + "_.";
 				this.englishWord = noun.translation.indefinite(number).replace('some','any')
-				this.russianSentence = ([2,5,6,7].includes(c) ? "У н" : "У ") + russianPronouns[1][c] + " нет _.";
+				this.russianSentence = ([2,5,6,7].includes(c) ? "У н" : "У ") + russianPronouns[2][c] + " нет _.";
 			}
 		},
 	],
