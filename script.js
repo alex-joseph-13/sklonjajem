@@ -95,7 +95,7 @@ updateTable();
 
 // set up settings
 
-for(let i=0; i<4; i++){
+for(let i=0; i<6; i++){
 	
 	for(let n=0; n<2; n++){
 		const caseButton = document.createElement("button");
@@ -112,8 +112,7 @@ for(let i=0; i<4; i++){
 
 const irregButton = document.createElement("button");
 irregButton.innerHTML = "Allow Irregular Nouns";
-irregButton.style.position = "relative";
-irregButton.style.top = "40px";
+irregButton.style.marginTop = "20px";
 irregButton.onclick = function(){
 	allowIrregulars = !allowIrregulars;
 	this.classList.toggle("pressed");
@@ -121,6 +120,8 @@ irregButton.onclick = function(){
 settings.appendChild(irregButton);
 
 settings.children[1].classList.toggle("pressed");
+settings.children[12].disabled = true;
+settings.children[13].disabled = true;
 //settings.children[12].classList.toggle("pressed");
 
 

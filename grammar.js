@@ -34,6 +34,7 @@ const englishPronouns = [
 	['I','you','it','we',"y'all",'they','he','she'],
 	['me','you','it','us',"y'all",'them','him','her'],
 	['my','your','its','our',"y'alls",'their','his','her'],
+	["I'm","you're","it's","we're","y'all are","they're","he's","she's"],
 ]
 
 
@@ -169,6 +170,7 @@ class PerfectiveVerb {
 	
 	//persons: 0=1s, 1=2s, 2=3s, 3=1p, 4=2p, 5=3p
 	future(person){
+		if(person > 5) {person = 2}
 		return this.stem + presentEndings[this.verbClass][person]
 	}
 	
@@ -204,10 +206,12 @@ class ImperfectiveVerb extends PerfectiveVerb {
 	
 	//persons: 0=1s, 1=2s, 2=3s, 3=1p, 4=2p, 5=3p
 	present(person){
+		// if(person>5) {person=2} happens in the below function
 		return super.future(person);
 	}
 	
 	future(person){
+		if(person > 5) {person = 2}
 		return futureAux[person] + " " + this.inf;
 	}
 	
@@ -721,6 +725,29 @@ function getVerb(lemma) {
 		}
 		
 		if (englishVerbs[mid] < lemma){
+			left = mid+1;
+		} else {
+			right = mid-1;
+		}
+		
+	}
+	
+	return null;
+}
+
+
+function getRussianVerb(lemma) {
+	let left = 0;
+	let right = russianVerbs.length;
+	
+	while (left <= right) {
+		const mid = Math.floor((left + right) / 2);
+		
+		if(russianVerbs[mid].toString() == lemma){
+			return russianVerbs[mid];
+		}
+		
+		if (russianVerbs[mid] < lemma){
 			left = mid+1;
 		} else {
 			right = mid-1;

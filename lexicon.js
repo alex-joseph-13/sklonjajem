@@ -32,7 +32,7 @@ regularImperfectiveVerbs = [
 	new ImperfectiveVerb("готовить", "cook", 0),
 	
 	new ImperfectiveVerb("забывать", "forget", 1),
-	new ImperfectiveVerb("изучать", "study", 1),
+	new ImperfectiveVerb("изучать", "learn", 1),
 	new ImperfectiveVerb("делать", "do", 1),
 	new ImperfectiveVerb("знать", "know", 1),
 	new ImperfectiveVerb("читать", "read", 1),
@@ -46,6 +46,8 @@ regularImperfectiveVerbs = [
 ]
 
 const intransitiveVerbs = regularImperfectiveVerbs.filter(v => v.transitivity == 0);
+
+const russianVerbs = regularImperfectiveVerbs.sort(); //TODO update this by adding the rest of the verbs
 
 
 let regularNouns = [

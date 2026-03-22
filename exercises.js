@@ -1,4 +1,19 @@
 
+function prepForm(prep, noun) {
+	noun = noun.replace(/[ьъ]/g,'');
+	if (countVowels(noun) <= 1 && !vowels.includes(noun[0]) && !vowels.includes(noun[1]) ) {
+		return prep + 'о';
+	}
+	if (noun[0] == prep[prep.length-1] && !vowels.includes(noun[1])){
+		return prep + 'о';
+	}
+	return prep;
+}
+
+
+
+
+
 class Exercise {
 	russianLemma;
 	englishSentence;
@@ -117,13 +132,36 @@ nounExercises = [
 	// prepositional templates
 	[
 	
-		// (person) cooks using (noun)
-		// -or-
-		// (person) is (doing verb) with (anim. noun)
+		
 	
 	],
 	
 	// instrumental templates
 	[
+	
+		// (person) cooks using (noun)
+		// -or-
+		// (person) is (doing verb) with (anim. noun)
+		class extends NounExercise {
+			constructor(noun, number) {
+				super(noun, 4, number);
+				
+				const p = Math.floor(Math.random()*8);
+				
+				if (noun.animate) {
+					const c = + (Math.random() > 0.5);
+					
+					this.englishSentence = englishPronouns[3][p] + [" having lunch with _."," cooking with _."][c];
+					this.englishWord = "the " + noun.translation.num(number);
+					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb(["обедать","готовить"][c]) + " " + prepForm('с',this.russianWord) + " _.";
+				} else {
+					this.englishSentence = englishPronouns[3][p] + " cooking using _.";
+					this.englishWord = noun.translation.indefinite(number);
+					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb('готовить').present(p) + " " + prepForm('с',this.russianWord) + " _.";
+				}
+				
+			}
+		}
+		
 	]
 ];
