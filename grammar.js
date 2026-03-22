@@ -1,5 +1,6 @@
 
 const vowels = 'аяэеыиоёую'
+const consonants = 'шщртйпсдфгхжклзцчвбнм'
 
 const englishVowels = 'aeiou'
 const englishDoublingConsonants = 'bdgklmnprtvz'
@@ -34,6 +35,70 @@ const englishPronouns = [
 	['me','you','it','us',"y'all",'them','him','her'],
 	['my','your','its','our',"y'alls",'their','his','her'],
 ]
+
+
+
+
+function nthVowel(string, n) {
+	// 1-based indexing
+	if (n==-1){
+		return lastVowel(string);
+	}
+	
+	for (let i in string) {
+		if(vowels.includes(string[i])) {
+			n--;
+		}
+		if(n==0){
+			return +i +1;
+		}
+	}
+	return 0;
+}
+
+function lastVowel(string) {
+	for (let i=string.length; i>=0; i--){
+		if (vowels.includes(string[i])) {
+			return i+1;
+		}
+	}
+	return 0;
+}
+
+function countVowels(string) {
+	let count = 0;
+	for (let i of string) {
+		if (vowels.includes(i)) {
+			count++;
+		}
+	}
+	return count;
+}
+
+function stressify(word, stress) {
+	const syls = countVowels(word);
+	if (syls <= 1){
+		return word;
+	}
+	
+	if (stress > syls){
+		return stressify(word, -1);
+	}
+	
+	const accentIndex = nthVowel(word, stress);
+	
+	n = word.length;
+	for (let i=0; i<n; i++) {
+		if (word[i] == 'ё' && i!=accentIndex-1) {
+			word = word.substr(0,i) + 'е' + word.substr(i+1);
+		}
+	}
+	
+	if(word[accentIndex-1] == 'ё'){
+		return word;
+	}
+	return word = word.substr(0,accentIndex) + '\u0301' + word.substr(accentIndex);
+}
 
 
 
@@ -169,17 +234,22 @@ class Noun {
 	base; // the base form is the nominative singular
 	declension; // declensions: -1=indeclinable, 0=neuter, 1=masc, 2=fem а/я, 3=fem ь
 	stem;
+	stress;
 	pluralDeclension;
 	pluralStem;
+	pluralStress;
 	paradigmChanges;
+	stressChanges;
 	translation;
 	
 	//params:
 		//animate: true or false (false by default)
-		//declension: -1,0,1,2,3
+		//declension: -1,0,1,2,3 (guesses by default)
 		//paradigmChanges: {0:irreglar nomSing form, 8: irregular genPl form, ...}
+		//stress: the stress of the noun, if multisyllable (default -1)
 		//pluralStem: (default is same as singular stem)
 		//pluralDeclension (default is same as singular)
+		//pluralStress (default is same as singular)
 		//genPl: specifically the form for the genitive plural, if this is the only thing that is different
 	
 	constructor(base, translation, params={}) {
@@ -200,7 +270,7 @@ class Noun {
 				this.translation = new EnglishNoun(translation[0],translation[1]);
 			}
 		} else {
-			throw new Error("The translation parameter must be an EnglishNoun, string, or array of strings.")
+			throw new Error(docstring);
 		}
 		
 		if (params.declension == undefined) {
@@ -223,13 +293,18 @@ class Noun {
 			this.stem = base;
 		}
 		
-		this.pluralDeclension = params.pluralDeclension ?? this.declension;
-		this.pluralStem = params.pluralStem ?? this.stem;
-		
 		this.paradigmChanges = params.paradigmChanges ?? {};
 		if (!!params.genPl) {
 			this.paradigmChanges[8] = params.genPl;
 		}
+		
+		this.pluralDeclension = params.pluralDeclension ?? this.declension;
+		this.pluralStem = params.pluralStem ?? this.stem;
+		
+		this.stress = params.stress ?? countVowels(this.paradigmChanges[0] ?? base);
+		this.pluralStress = params.pluralStress ?? this.stress;
+		this.stressChanges = params.stressChanges ?? {};
+		
 		
 	}
 	
@@ -241,22 +316,31 @@ class Noun {
 	// numbers: 0=singular, 1=plural
 	decline(nounCase, number){
 		
+		
 		let overrideNumber = 6*number + nounCase;
-		if (overrideNumber in this.paradigmChanges){
-			return this.paradigmChanges[overrideNumber];
+		let stress;
+		if (overrideNumber in this.stressChanges) {
+			stress = this.stressChanges[overrideNumber];
+		} else {
+			stress = (number==0) ? this.stress : this.pluralStress;
 		}
 		
-		let stem = (number==0) ? this.stem : this.pluralStem;
-		let declension = (number==0) ? this.declension : this.pluralDeclension;
-		let animate = this.animate;
+		// there are 2 circumstances in which we can skip declension rules:
 		
+		if (overrideNumber in this.paradigmChanges){
+			return stressify(this.paradigmChanges[overrideNumber], stress);
+		}
+		
+		const declension = (number==0)? this.declension : this.pluralDeclension;
 		if (declension == -1){
 			// indeclinable nouns
-			return this.base;
+			return stressify(this.base, stress);
 		}
 		
-		let output;
 		
+		const stem = (number==0) ? this.stem : this.pluralStem;
+		
+		let output;
 		switch(6*number + nounCase) {
 			case 0:
 				// nom sing
@@ -265,7 +349,7 @@ class Noun {
 			case 1:
 				
 				// acc sing
-				if (declension == 1 && animate) {
+				if (declension == 1 && this.animate) {
 					return this.decline(2,0);
 				} else if (declension == 2){
 					output = stem + 'у'
@@ -321,7 +405,7 @@ class Noun {
 				break;
 			case 7:
 				// acc pl
-				if (animate) {
+				if (this.animate) {
 					return this.decline(2,1)
 				} else {
 					return this.decline(0,1)
@@ -329,14 +413,20 @@ class Noun {
 				break;
 			case 8:
 				// gen pl
-				if (declension == 1 && stem[stem.length-2] == 'й') {
+				if (declension == 1 && stem[stem.length-2] == 'ц') {
 					output = stem + 'ев'
-				} else if (declension != 2 && stem[stem.length-1] == 'ь'){
+				} else if (declension != 2 && ['ь','ч','ж','ш','щ'].includes(stem[stem.length-1])){
 					output = stem + 'ей'
 				} else if (declension == 1){
 					output = stem + 'ов'
 				} else {
-					output = stem
+					// remove the vowel from the end, but two consonants in a row are not allowed at word end
+					if ( (!vowels.includes(stem[stem.length-1])) && !vowels.concat('с').includes(stem[stem.length-2]) ) {
+						const epenthetic = (['ш','ь'].includes(stem[stem.length-2])) ? 'e' : 'o';
+						output = stem.substr(0,stem.length-1) + epenthetic + stem[stem.length-1];
+					} else {
+						output = stem;
+					}
 				}
 				break;
 			case 9:
@@ -349,7 +439,7 @@ class Noun {
 				 break;
 			case 11:
 				// inst pl
-				output = stem + 'ами'
+				return this.decline(3,1) + 'и'
 				break;
 		}
 		
@@ -371,6 +461,10 @@ class Noun {
 		output = output.replace('щы','щи');
 		output = output.replace('жы','жи');
 		output = output.replace('чы','чи');
+		
+		output = stressify(output, stress);
+		
+		
 		
 		return output;
 		
@@ -427,6 +521,7 @@ class DefectiveSingularNoun extends Noun {
 }
 
 //а я е ы и о ё у ю й ь
+
 
 
 
@@ -656,295 +751,3 @@ class EnglishVerbPhrase extends EnglishVerb {
 	singular() {return this.verb.singular() + this.complement;}
 	gerund() {return this.verb.gerund() + this.complement;}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-englishVerbs = [
-	
-	new EnglishVerb("work"),
-	new EnglishVerb("eat", {past:"ate",participle:"eaten"}),
-	new EnglishVerb("cough"),
-	new EnglishVerb("speak", {past:"spoke",participle:"spoken"}),
-	new EnglishVerb("forget", {past:"forgot",participle:"forgotten"}),
-	new EnglishVerb("study"),
-	new EnglishVerb("do", {past:"did",participle:"done"}),
-	new EnglishVerb("know", {past:"knew",participle:"known"}),
-	new EnglishVerb("read", {past:"read"}),
-	new EnglishVerb("understand", {past:"understood"}),
-	new EnglishVerb("solve"),
-	new EnglishVerb("help"),
-	new EnglishVerb("send", {past:"sent"}),
-	new EnglishVerb("show", {participle:"shown"}),
-	
-]
-
-englishVerbs.sort();
-
-
-
-regularImperfectiveVerbs = [
-
-	new ImperfectiveVerb("работать", "work", 0),
-	new ImperfectiveVerb("обедать", "eat lunch", 0),
-	new ImperfectiveVerb("кашлять", "cough", 0),
-	new ImperfectiveVerb("говорить", "speak", 0),
-	
-	new ImperfectiveVerb("забывать", "forget", 1),
-	new ImperfectiveVerb("изучать", "study", 1),
-	new ImperfectiveVerb("делать", "do", 1),
-	new ImperfectiveVerb("знать", "know", 1),
-	new ImperfectiveVerb("читать", "read", 1),
-	new ImperfectiveVerb("понимать", "understand", 1),
-	new ImperfectiveVerb("решать", "solve", 1),
-	new ImperfectiveVerb("помогать", "help", 1),
-
-	new ImperfectiveVerb("отправлять", "send", 2),
-	new ImperfectiveVerb("показывать", "show", 2),
-	
-]
-
-const intransitiveVerbs = regularImperfectiveVerbs.filter(v => v.transitivity == 0);
-
-
-regularNouns = [
-
-	new Noun('урок','assignment'),
-	new Noun('язык','language'),
-	new Noun('класс','class'),
-	new Noun('человек',['person','people'], {animate:true}),
-	new Noun('здание','building'),
-	new Noun('школа','school'),
-	new Noun('вопрос','question'),
-	new Noun('эсэмэска','text message'),
-	new Noun('идиот','(male) idiot',{animate:true}),
-	new Noun('лицо','face'),
-	new Noun('рука','hand'),
-	new Noun('дело','thing'),
-	new Noun('голова','head'),
-	new Noun('слово','word'),
-	new Noun('место','place'),
-	new Noun('мама','mom',{animate:true}),
-	
-	new Noun('девушка','girl',{animate:true,genPl:"девушек"}),
-	new Noun('идиотка','(female) idiot',{animate:true,genPl:"идиоток"}),
-	
-]
-
-
-singularNouns = [
-	new DefectiveSingularNoun('еда',['food']),
-	new Noun('чай',['tea']),
-	new Noun('математика',['math']),
-	new Noun('физика',['physics']),
-]
-
-pluralNouns = [
-	new DefectivePluralNoun('деньга',['money'],{genPl:"денег"}),
-]
-
-
-
-irregularNouns = [
-	new Noun('парнь','guy',{animate:true,paradigmChanges: ["парень"]}),
-	new Noun('друг','friend',{animate:true,pluralStem:"друзьй",pluralDeclension:0,genPl:"друзей"}),
-	new Noun('глаз','eye',{pluralDeclension:0}),
-	new Noun('днь','day',{paradigmChanges:['день']}),
-	new Noun('дом','house',{paradigmChanges:{6:'дома'}}),
-	new Noun('отц','father',{animate:true,paradigmChanges:['отец']}),
-]
-
-
-let nouns = regularNouns.concat(irregularNouns);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Exercise {
-	russianLemma;
-	englishSentence;
-	englishWord;
-	russianSentence;
-	russianWord;
-	details;
-}
-
-class NounExercise {
-	constructor(noun, nounCase, number) {
-		this.russianLemma = noun.toString();
-		this.englishWord = noun.translation.num(number);
-		this.russianWord = noun.decline(nounCase, number);
-		this.details = nounCases[nounCase] + [" singular"," plural"][number];
-	}
-}
-
-
-nounExercises = [
-
-	// nominative templates
-	[
-		// (person) has (noun)
-		class extends NounExercise {
-			constructor(noun, number) {
-				super(noun, 0, number);
-				
-				const c = Math.floor(Math.random() * 8) //choice of pronoun
-				
-				this.englishSentence = englishPronouns[0][c] + ([2,6,7].includes(c) ? " has " : " have ") + "_.";
-				this.englishWord = ((number == 0) ? "a " : "some ") + noun.translation.num(number);
-				this.russianSentence = ([2,5,6,7].includes(c) ? "У н" : "У ") + russianPronouns[1][c] + " есть _.";
-			}
-		},
-		
-		// nominative template: the (noun) (does something)
-		class extends NounExercise {
-			constructor(noun, number) {
-				super(noun, 0, number);
-				
-				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
-				
-				this.englishSentence = "_ " + ((number==0) ? verb.translation.singular() : verb.translation.base) + ".";
-				this.englishWord = "The " + noun.translation.num(number);
-				this.russianSentence = "_ " + verb.present(2 + 3*number) + ".";
-			}
-		},
-	],
-
-	// accusative templates
-	[
-		// send (person) the (noun)
-		class extends NounExercise {
-			constructor(noun, number) {
-				super(noun, 1, number);
-				
-				let p = [0,3,5,6,7][Math.floor(Math.random() * 5)]
-				//choice of pronoun from [me, us, them, him, her]
-				
-				this.englishSentence = "Send " + englishPronouns[1][p] + " _.";
-				this.englishWord = "the " + noun.translation.num(number);
-				this.russianSentence = "Отправлай " + russianPronouns[3][p] + " _.";
-			}
-		},
-	],
-
-	// genitive templates
-	[
-		// (person) doesn't have (noun)
-		class extends NounExercise {
-			constructor(noun, number) {
-				super(noun, 2, number);
-				
-				const c = Math.floor(Math.random() * 8) //choice of pronoun
-				
-				this.englishSentence = englishPronouns[0][c] + ([2,6,7].includes(c) ? " doesn't have " : " don't have ") + "_.";
-				this.englishWord = noun.translation.indefinite(number).replace('some','any')
-				this.russianSentence = ([2,5,6,7].includes(c) ? "У н" : "У ") + russianPronouns[1][c] + " нет _.";
-			}
-		},
-	],
-
-	// dative templates
-	[
-		// send (money / a messsage) to (noun)
-		class extends NounExercise {
-			constructor(noun, number) {
-				super(noun, 3, number);
-				
-				const c = Math.floor(Math.random() * 2) //choice of object
-				
-				this.englishSentence = "Send " + ["money","a text"][c] + " to _.";
-				this.englishWord = "the " + noun.translation.num(number);
-				this.russianSentence = "Отправлай " + ["деньги","эсэмэску"][c] + " _.";
-			}
-		},
-		
-		// the (noun) needs to (verb)
-		class extends NounExercise {
-			constructor(noun, number) {
-				super(noun, 3, number);
-				
-				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
-				
-				this.englishSentence = ((number==0 || noun.translation instanceof EnglishUncountableNoun) ? "_ needs to " : "_ need to ") + verb.translation.toString();
-				this.englishWord = "the " + noun.translation.num(number);
-				this.russianSentence = "_ надо " + verb.inf;
-				
-				
-			}
-		}
-	],
-	
-	// prepositional templates
-	[
-	],
-	
-	// instrumental templates
-	[
-	]
-];
-
-

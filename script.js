@@ -51,6 +51,8 @@ function wordlist(number) {
 
 // dev tab (conjugation tables)
 
+const favoriteNouns = irregularNouns;
+
 nounNumber = 0;
 
 function nextNoun(){
@@ -59,9 +61,9 @@ function nextNoun(){
 }
 
 function updateTable(){
-	const noun = wordlist(2)[nounNumber];
-	tableItems = noun.allDeclensions();
-	/*
+	const noun = favoriteNouns[nounNumber];
+	tableItems = [nounCases].concat(noun.allDeclensions());
+	//*
 	//code to make the order of the table match openrussian.org
 	for(i in tableItems){
 		const column = tableItems[i];
@@ -69,8 +71,9 @@ function updateTable(){
 	}//*/
 	
 	for (i=0; i<6; i++){
-		document.getElementById("tbody").children[i+1].children[1].innerHTML = tableItems[0][i] ?? "-";
-		document.getElementById("tbody").children[i+1].children[2].innerHTML = tableItems[1][i] ?? "-";
+		for (j=0; j<3; j++){
+			document.getElementById("tbody").children[i+1].children[j].innerHTML = tableItems[j][i] ?? "-";
+		}
 	}
 	document.getElementById("tbody").children[7].children[1].innerHTML = noun.translation.num(0);
 	document.getElementById("tbody").children[7].children[2].innerHTML = noun.translation.num(1);
@@ -189,9 +192,12 @@ function prepareExercise(exercise) {
 	})
 }
 
+function match(s1,s2) {
+	return s1.toLowerCase().replace(/['\u0301]/g,'') == s2.toLowerCase().replace(/['\u0301]/g,'');
+}
 
 function submitExercise() {
-	if (answer_box.value.toLowerCase() == currentExercise.russianWord) {
+	if (match(answer_box.value, currentExercise.russianWord)) {
 		$("correct").hidden = false;
 		answer_box.replaceWith(currentExercise.russianWord);
 		setTimeout(() => {
