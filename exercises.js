@@ -153,7 +153,7 @@ nounExercises = [
 					
 					this.englishSentence = englishPronouns[3][p] + [" having lunch with _."," cooking with _."][c];
 					this.englishWord = "the " + noun.translation.num(number);
-					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb(["обедать","готовить"][c]) + " " + prepForm('с',this.russianWord) + " _.";
+					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb(["обедать","готовить"][c]).present(p) + " " + prepForm('с',this.russianWord) + " _.";
 				} else {
 					this.englishSentence = englishPronouns[3][p] + " cooking using _.";
 					this.englishWord = noun.translation.indefinite(number);
