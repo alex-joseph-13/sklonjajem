@@ -157,7 +157,7 @@ nounExercises = [
 				} else {
 					this.englishSentence = englishPronouns[3][p] + " cooking using _.";
 					this.englishWord = noun.translation.indefinite(number);
-					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb('готовить').present(p) + " " + prepForm('с',this.russianWord) + " _.";
+					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb('готовить').present(p) + " _.";
 				}
 				
 			}
