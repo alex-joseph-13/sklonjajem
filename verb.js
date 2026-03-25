@@ -86,7 +86,7 @@ class PerfectiveVerb {
 	}
 	
 	toString() {
-		return this.inf;
+		return this.inf.replace('\u0301','');
 	}
 	
 	//persons: 0=1s, 1=2s, 2=3s, 3=1p, 4=2p, 5=3p
