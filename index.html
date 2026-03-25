@@ -16,24 +16,30 @@
 	
     <main>
 	
-		<div id="quiz_tab">
+		<div>
+			<button id=pos_button onclick="switch_pos()">switch to verbs</button>
+		</div>
+		
+		<div id="quiz_tab" hidden>
 		
 			<button id="settings_button" onclick="click_settings_button()">Start Practicing</button>
-		
-			<p id=english_sentence></p>
-			<p id=russian_lemma></p>
-			<p id=help></p>
-			<p id=russian_sentence></p>
 			
-			<p id="correct" hidden>Correct!</p>
-			<p id="incorrect" hidden>Incorrect!</p>
+			<div id="quiz">
+				<p id=english_sentence></p>
+				<p id=russian_lemma></p>
+				<p id=help></p>
+				<p id=russian_sentence></p>
+				
+				<p id="correct" hidden>Correct!</p>
+				<p id="incorrect" hidden>Incorrect!</p>
+			</div>
 			
 			<div id="settings"></div>
 			
 		</div>
 		
 		
-		<div id="debug_tab" hidden>
+		<div id="debug_tab">
 			<table>
 			  <tbody id="tbody">
 				<tr>
@@ -79,7 +85,7 @@
 			  </tbody>
 			</table>
 			
-			<button onclick="nextNoun()">next noun</button>
+			<button onclick="nextWord()">next word</button>
 		
 		</div>
 		

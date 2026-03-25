@@ -24,15 +24,15 @@ englishVerbs.sort();
 
 let regularImperfectiveVerbs = [
 
-	new ImperfectiveVerb("работать", "work", 0),
-	new ImperfectiveVerb("обедать", "eat lunch", 0),
-	new ImperfectiveVerb("кашлять", "cough", 0),
+	new ImperfectiveVerb("работать", "work", 0, {stress:2}),
+	new ImperfectiveVerb("обедать", "eat lunch", 0, {stress:2}),
+	new ImperfectiveVerb("кашлять", "cough", 0, {stress:1}),
 	new ImperfectiveVerb("говорить", "speak", 0),
-	new ImperfectiveVerb("готовить", "cook", 0),
+	new ImperfectiveVerb("готовить", "cook", 0, {stress:2}),
 	
 	new ImperfectiveVerb("забывать", "forget", 1),
 	new ImperfectiveVerb("изучать", "learn", 1),
-	new ImperfectiveVerb("делать", "do", 1),
+	new ImperfectiveVerb("делать", "do", 1, {stress:1}),
 	new ImperfectiveVerb("знать", "know", 1),
 	new ImperfectiveVerb("читать", "read", 1),
 	new ImperfectiveVerb("понимать", "understand", 1),
@@ -40,7 +40,7 @@ let regularImperfectiveVerbs = [
 	new ImperfectiveVerb("помогать", "help", 1),
 
 	new ImperfectiveVerb("отправлять", "send", 2),
-	new ImperfectiveVerb("показывать", "show", 2),
+	new ImperfectiveVerb("показывать", "show", 2, {stress:2}),
 	
 ]
 

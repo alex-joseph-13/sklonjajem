@@ -58,7 +58,7 @@ nounExercises = [
 				
 				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
 				
-				this.englishSentence = "_ " + ((number==0 || noun instanceof EnglishUncountableNoun) ? verb.translation.singular() : verb.translation.base) + ".";
+				this.englishSentence = "_ " + ((number==0 || noun.translation instanceof EnglishUncountableNoun) ? verb.translation.singular() : verb.translation.base) + ".";
 				this.englishWord = "The " + noun.translation.num(number);
 				this.russianSentence = "_ " + verb.present(2 + 3*number) + ".";
 			}
@@ -156,8 +156,8 @@ nounExercises = [
 					this.englishWord = "the " + noun.translation.num(number);
 					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb(["обедать","готовить"][c]).present(p) + " " + prepForm('с',this.russianWord) + " _.";
 				} else {
-					this.englishSentence = englishPronouns[3][p] + " cooking using _.";
-					this.englishWord = noun.translation.indefinite(number);
+					this.englishSentence = englishPronouns[3][p] + " cooking _.";
+					this.englishWord = "using " + noun.translation.indefinite(number);
 					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb('готовить').present(p) + " _.";
 				}
 				

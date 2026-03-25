@@ -135,13 +135,13 @@ class PerfectiveVerb {
 	inf;
 	verbClass;
 	stem;
+	stress;
 	transitivity;
 	translation;
 	
 	// transitivity is 0 for intransitive, 1 for transitive,
 	//  and 2 for ditransitive
-	constructor(infinitive, translation, transitivity, stem=null){
-		this.inf = infinitive;
+	constructor(infinitive, translation, transitivity, params={}){
 		this.transitivity = transitivity;
 		
 		// verb class 1 ends in -ить, class 0 ends in -ть
@@ -150,11 +150,10 @@ class PerfectiveVerb {
 		
 		// понимать -> понима-
 		// говорить -> говор-
-		if (stem == null) {
-			this.stem = infinitive.substr(0, infinitive.length - 2 - this.verbClass);
-		} else {
-			this.stem = stem;
-		}
+		this.stem = params.stem ?? infinitive.substr(0, infinitive.length - 2 - this.verbClass);
+		this.stress = params.stress ?? countVowels(infinitive);
+		
+		this.inf = stressify(infinitive, this.stress);
 		
 		if (translation.includes(" ")){
 			this.translation = new EnglishVerbPhrase(translation.substr(0,translation.indexOf(" ")), translation.substring(translation.indexOf(" ")+1,translation.length));
@@ -171,17 +170,42 @@ class PerfectiveVerb {
 	//persons: 0=1s, 1=2s, 2=3s, 3=1p, 4=2p, 5=3p
 	future(person){
 		if(person > 5) {person = 2}
-		return this.stem + presentEndings[this.verbClass][person]
+		let stem = this.stem;
+		if("бвмфп".includes(stem[stem.length-1]) && person==0){
+			stem = stem + 'л';
+		}
+		const output = stem + presentEndings[this.verbClass][person]
+		return stressify(output, this.stress);
 	}
 	
 	//genders: 0=neuter, 1=masc, 2=fem, 3=plural
 	past(gender){
-		return this.stem + pastEndings[person];
+		const output = this.stem + ((this.verbClass == 1) ? "и" : "") + pastEndings[gender];
+		return stressify(output, this.stress);
 	}
 	
 	//numbers: 0=singular, 1=plural
 	command(number){
-		return this.stem + commandEndings[this.verbClass][number]
+		let suffix;
+		if(this.verbClass == 0) {
+			// stem ends in a vowel
+			suffix = "й";
+		} else if (this.stress > countVowels(this.stem)) {
+			// stress on the ending (I ought to be using the stress of the Я form if it is different from default)
+			suffix = "и";
+		} else if (vowels.includes(this.stem.replace(/ьъ/g,"").slice(-2,-1))) {
+			// stem does not end in two consonants (and does not have stress)
+			suffix = "ь";
+		} else {
+			// stem ends in two consonants
+			suffix = "и";
+		}
+		
+		if(number==1){
+			suffix += 'те';
+		}
+		const output = this.stem + suffix;
+		return stressify(output, this.stress);
 	}
 	
 	activePastParticiple(){
@@ -198,7 +222,20 @@ class PerfectiveVerb {
 	
 	adverbialPastParticiple(){
 		let past = this.past(1);
-		return past.substr(0,past.length-1) + 'в'
+		return past.substr(0,past.length-1) + 'в';
+	}
+	
+	allConjugations(){
+		return [
+			['','Я','Ты','Он','Мы','Вы','Они'],
+			['future',this.future(0),this.future(1),this.future(2),this.future(3),this.future(4),this.future(5)],
+			[],
+			['','Оно','Он','Она','Они'],
+			['past',this.past(0),this.past(1),this.past(2),this.past(3)],
+			[],
+			['','Ты','Вы'],
+			['command',this.command(0),this.command(1),"",this.inf],
+		]
 	}
 }
 
@@ -228,6 +265,19 @@ class ImperfectiveVerb extends PerfectiveVerb {
 	
 	adverbialPresentParticiple(){
 		return stem + (verbClass == 0) ? "я" : "а";
+	}
+	
+	allConjugations(){
+		return [
+			['','Я','Ты','Он','Мы','Вы','Они'],
+			['present',this.present(0),this.present(1),this.present(2),this.present(3),this.present(4),this.present(5)],
+			[],
+			['','Оно','Он','Она','Они'],
+			['past',this.past(0),this.past(1),this.past(2),this.past(3)],
+			[],
+			['','Ты','Вы'],
+			['command',this.command(0),this.command(1),"",this.inf],
+		]
 	}
 	
 }

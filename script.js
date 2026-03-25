@@ -14,6 +14,36 @@ function sentenceCase(string) {
 
 
 
+partOfSpeech = "noun";
+let favoriteWords = irregularNouns;
+
+function switch_pos() {
+	$("pos_button").innerHTML = "switch to " + partOfSpeech + "s";
+	if (partOfSpeech == "noun") {
+		partOfSpeech = "verb";
+		construct_table(8,7);
+		favoriteWords = regularImperfectiveVerbs;
+	} else {
+		partOfSpeech = "noun";
+		construct_table(8,3);
+		favoriteWords = irregularNouns;
+	}
+	updateTable();
+}
+
+function construct_table(rows, columns) {
+	tbody.innerHTML = "";
+	for(let i=0; i<rows; i++) {
+		row = tbody.appendChild(document.createElement('tr'));
+		for(let j=0; j<columns; j++){
+			row.appendChild(document.createElement('th'));
+		}
+	}
+}
+
+
+
+
 
 let currentExercise;
 let testDeclensions = new Set([6]);
@@ -51,18 +81,24 @@ function wordlist(number) {
 
 // dev tab (conjugation tables)
 
-const favoriteNouns = irregularNouns;
+let exampleNumber = 0;
 
-nounNumber = 0;
-
-function nextNoun(){
-	nounNumber++;
+function nextWord(){
+	exampleNumber++;
 	updateTable();
 }
 
 function updateTable(){
-	const noun = favoriteNouns[nounNumber];
-	tableItems = [nounCases].concat(noun.allDeclensions());
+	if (partOfSpeech == "noun"){
+		updateNounTable();
+	} else if (partOfSpeech == "verb"){
+		updateVerbTable();
+	}
+}
+
+function updateNounTable(){
+	const noun = favoriteWords[exampleNumber];
+	let tableItems = [nounCases].concat(noun.allDeclensions());
 	//*
 	//code to make the order of the table match openrussian.org
 	for(i in tableItems){
@@ -77,6 +113,16 @@ function updateTable(){
 	}
 	document.getElementById("tbody").children[7].children[1].innerHTML = noun.translation.num(0);
 	document.getElementById("tbody").children[7].children[2].innerHTML = noun.translation.num(1);
+}
+
+function updateVerbTable(){
+	const verb = favoriteWords[exampleNumber];
+	const tableItems = verb.allConjugations();
+	for(let i in tableItems){
+		for (let j in tableItems[i]){
+			document.getElementById("tbody").children[i].children[j].innerHTML = tableItems[i][j];
+		}
+	}
 }
 
 updateTable();
@@ -128,9 +174,11 @@ settings.children[13].disabled = true;
 
 function click_settings_button() {
 	if(settings.hidden){
+		quiz.hidden = true;
 		settings.hidden = false;
 		settings_button.innerHTML = "Close Settings";
 	} else if (testDeclensions.size > 0){
+		quiz.hidden = false;
 		settings.hidden = true;
 		settings_button.innerHTML = "Settings";
 		nextExercise();
@@ -240,3 +288,6 @@ function nextExercise() {
 	prepareExercise(currentExercise);
 	
 }
+
+
+switch_pos();
