@@ -289,5 +289,3 @@ function nextExercise() {
 	
 }
 
-
-switch_pos();
