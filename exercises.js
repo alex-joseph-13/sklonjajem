@@ -166,3 +166,86 @@ nounExercises = [
 		
 	]
 ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class VerbExercise extends Exercise {
+	
+	/*russianLemma;
+	englishSentence;
+	englishWord;
+	russianSentence;
+	russianWord;
+	details;*/
+	englishLemma;
+	
+	constructor (vPair, person, isPerfective) {
+		super();
+		const c = Math.floor(Math.random() * vPair.predicates.length);
+		
+		let es = englishPronouns[0][person] + " _ " + vPair.englishPreds[c] + ".";
+		let rs = russianPronouns[0][person] + " _ " + vPair.predicates[c] + ".";
+		rs = rs.replace(' ,',',');
+		this.russianLemma = isPerfective ? vPair.perf : vPair.imp;
+		this.englishLemma = vPair.translations[ (c >= vPair.translations.length) ? 0 : c ];
+		
+		if(es.includes('(') || rs.includes('(')){
+			let p = Math.floor(Math.random()*8);
+			if((p == 0 || p == 3) && (person == 0 || person == 3)){
+				p = p / 3 + 6;
+			} else if ((p == 1 || p == 4) && (person == 1 || person == 4)){
+				p = (p-1)/3 + 6;
+			}
+			console.log('replacing time');
+			
+			es = es.replace('(s)',englishPronouns[0][p]);
+			es = es.replace('(o)',englishPronouns[1][p]);
+			es = es.replace('(p)',englishPronouns[2][p]);
+			es = es.replace('(rp)',englishPronouns[2][person]);
+			
+			rs = rs.replace('(н)',russianPronouns[0][p]);
+			rs = rs.replace('(а)',russianPronouns[1][p]);
+			rs = rs.replace('(г)',russianPronouns[2][p]);
+			rs = rs.replace('(д)',russianPronouns[3][p]);
+			rs = rs.replace('(п)',russianPronouns[4][p]);
+			rs = rs.replace('(и)',russianPronouns[5][p]);
+		}
+		
+		this.englishSentence = es;
+		this.russianSentence = rs;
+		
+	}
+	
+}
+
+
+class presentVerbExercise extends VerbExercise {
+	constructor(vPair, person) {
+		super(vPair, person, false);
+		
+		
+		if(vPair.properties.noGerund) {
+			this.englishWord = this.englishLemma.toString();
+		} else {
+			this.englishWord = this.englishLemma.gerund();
+			this.englishSentence = this.englishSentence.replace(englishPronouns[0][person],englishPronouns[3][person]);
+		}
+		
+		this.russianWord = this.russianLemma.present(person);
+		if(person >= 6) {person = 2};
+		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " present";
+	}
+}

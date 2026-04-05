@@ -319,16 +319,11 @@ class Noun {
 				break;
 		}
 		
-		output = output.replace('йа','я');
-		output = output.replace('ьа','я');
-		output = output.replace('йе','е');
-		output = output.replace('ье','е');
-		output = output.replace('йо','ё');
-		output = output.replace('ьо','ё');
-		output = output.replace('йу','ю');
-		output = output.replace('ьу','ю');
-		output = output.replace('йы','и');
-		output = output.replace('ьы','и');
+		output = output.replace(/[йь]а/,'я');
+		output = output.replace(/[йь]е/,'е');
+		output = output.replace(/[йь]о/,'ё');
+		output = output.replace(/[йь]у/,'ю');
+		output = output.replace(/[йь]ы/,'и');
 		
 		output = output.replace('гы','ги');
 		output = output.replace('кы','ки');

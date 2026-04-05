@@ -17,14 +17,15 @@ const englishPronouns = [
 
 
 const presentEndings =[
-	['ю','ешь','ет','ем','ете','ют'],
-	['ю','ишь','ит','им','ите','ят']
+	['у','ешь','ет','ем','ете','ут'],
+	['ю','ишь','ит','им','ите','ят'],
+	['у','ишь','ит','им','ите','ат'],
+	['у','ёшь','ёт','ём','ёте','ут'],
 ]
 
 const futureAux = ['буду','будешь','будет','будем','будете','будут']
 
-const pastEndings = ['ло','л','ла','ли']
-
+const pastEndings = ['о','','а','и']
 
 
 
@@ -58,30 +59,58 @@ class PerfectiveVerb {
 	verbClass;
 	stem;
 	stress;
-	transitivity;
-	translation;
+	stressShift;
+	pastShift;
+	irregCommand;
+	irregPast;
 	
-	// transitivity is 0 for intransitive, 1 for transitive,
-	//  and 2 for ditransitive
-	constructor(infinitive, translation, transitivity, params={}){
-		this.transitivity = transitivity;
+	// params:
+	//  stem (if different from default)
+	//  verbClass (if different from default)
+	//  stress (default is last syllable)
+	//  stressShift (if the stress shifts back by one syllable in present conjugations)
+	//  pastStress (if different from default)
+	//  pastShift (if the stress shifts to the ending on femenine past)
+	//  irregCommand (command form, if different from computed)
+	//  irregPast (past form, if different from computed)
+	//  overrides (all present/future forms, if different from computed)
+	constructor(infinitive, params={}){
 		
 		// verb class 1 ends in -ить, class 0 ends in -ть
 		//  (usually called 2 and 1 respectively)
-		this.verbClass = (infinitive[infinitive.length-3] == 'и') ? 1 : 0;
+		if (!!params.verbClass) {
+			this.verbClass = params.verbClass;
+		} else if (infinitive[infinitive.length-3] == 'у'){
+			this.verbClass = 3;
+		} else if (infinitive[infinitive.length-3] != 'и'){
+			this.verbClass = 0;
+		} else if ('кгхжшщчц'.includes(infinitive[infinitive.length-4])){
+			this.verbClass = 2;
+		} else {
+			this.verbClass = 1;
+		}
 		
 		// понимать -> понима-
 		// говорить -> говор-
-		this.stem = params.stem ?? infinitive.substr(0, infinitive.length - 2 - this.verbClass);
-		this.stress = params.stress ?? countVowels(infinitive);
-		
-		this.inf = stressify(infinitive, this.stress);
-		
-		if (translation.includes(" ")){
-			this.translation = new EnglishVerbPhrase(translation.substr(0,translation.indexOf(" ")), translation.substring(translation.indexOf(" ")+1,translation.length));
+		if (! params.stem) {
+			if (this.verbClass >= 1) {
+				this.stem = infinitive.slice(0,-3);
+			} else {
+				this.stem = infinitive.slice(0,-2) + 'й';
+			}
 		} else {
-			this.translation = getVerb(translation);
+			this.stem = params.stem;
 		}
+		
+		this.stress = params.stress ?? countVowels(infinitive);
+		this.stressShift = (params.stressShift===true) ? this.stress-1 : params.stressShift ?? false;
+		this.pastStress = params.pastStress ?? this.stress;
+		this.pastShift = !!params.pastShift;
+		this.irregCommand = params.irregCommand ?? null;
+		this.irregPast = params.irregPast ?? null;
+		this.overrides = params.overrides ?? [];
+		
+		this.inf = infinitive;
 		
 	}
 	
@@ -89,29 +118,64 @@ class PerfectiveVerb {
 		return this.inf.replace('\u0301','');
 	}
 	
+	infinitive() {
+		return stressify(this.inf, this.stress);
+	}
+	
 	//persons: 0=1s, 1=2s, 2=3s, 3=1p, 4=2p, 5=3p
 	future(person){
 		if(person > 5) {person = 2}
+		const stress = (this.stressShift && person>0) ? this.stressShift : this.stress;
+		
+		if(person in this.overrides){
+			return stressify(this.overrides[person], stress);
+		}
+		
 		let stem = this.stem;
-		if("бвмфп".includes(stem[stem.length-1]) && person==0){
+		const suffix = presentEndings[this.verbClass][person];
+		
+		if("бвмфп".includes(stem[stem.length-1]) && suffix[0] == 'ю'){
 			stem = stem + 'л';
 		}
-		const output = stem + presentEndings[this.verbClass][person]
-		return stressify(output, this.stress);
+		
+		let output = stem + suffix;
+		output = output.replace(/[йь]е/,'е');
+		output = output.replace(/[йь]у/,'ю');
+		output = output.replace('ге','же');
+		output = output.replace('ке','ше');
+		
+		return stressify(output, stress);
 	}
 	
 	//genders: 0=neuter, 1=masc, 2=fem, 3=plural
 	past(gender){
-		const output = this.stem + ((this.verbClass == 1) ? "и" : "") + pastEndings[gender];
-		return stressify(output, this.stress);
+		const stress = (this.pastShift && gender==2) ? -1 : this.pastStress;
+		if (!!this.irregPast) {
+			let output = this.irregPast;
+			if(output[output.length-1] != 'л' && gender!=1){
+				output += 'л';
+			}
+			output = output + pastEndings[gender];
+			return stressify(output, stress);
+		}
+		const output = this.toString().slice(0,-2) + 'л' + pastEndings[gender];
+		return stressify(output, stress);
 	}
 	
 	//numbers: 0=singular, 1=plural
 	command(number){
+		if(number == 1){
+			return this.command(0) + 'те';
+		}
+		
+		if(this.irregCommand != null) {
+			return this.irregCommand;
+		}
+		
 		let suffix;
-		if(this.verbClass == 0) {
+		if(this.stem[this.stem.length-1] == 'й') {
 			// stem ends in a vowel
-			suffix = "й";
+			suffix = "";
 		} else if (this.stress > countVowels(this.stem)) {
 			// stress on the ending (I ought to be using the stress of the Я form if it is different from default)
 			suffix = "и";
@@ -123,9 +187,6 @@ class PerfectiveVerb {
 			suffix = "и";
 		}
 		
-		if(number==1){
-			suffix += 'те';
-		}
 		const output = this.stem + suffix;
 		return stressify(output, this.stress);
 	}
@@ -156,10 +217,14 @@ class PerfectiveVerb {
 			['past',this.past(0),this.past(1),this.past(2),this.past(3)],
 			[],
 			['','Ты','Вы'],
-			['command',this.command(0),this.command(1),"",this.inf],
+			['command',this.command(0),this.command(1),"",this.infinitive()],
+			[],
 		]
 	}
 }
+
+
+
 
 class ImperfectiveVerb extends PerfectiveVerb {
 	
@@ -198,7 +263,7 @@ class ImperfectiveVerb extends PerfectiveVerb {
 			['past',this.past(0),this.past(1),this.past(2),this.past(3)],
 			[],
 			['','Ты','Вы'],
-			['command',this.command(0),this.command(1),"",this.inf],
+			['command',this.command(0),this.command(1),"",this.infinitive()],
 		]
 	}
 	
@@ -333,7 +398,39 @@ class EnglishVerb {
 }
 
 
+class EnglishVerbPhrase extends EnglishVerb {
+	verb;
+	complement;
+	
+	constructor(verb, complement){
+		super();
+		this.verb = verb;
+		
+		this.complement = " " + complement;
+		this.base = verb + this.complement;
+	}
+	
+	past() {return this.verb.past() + this.complement;}
+	participle() {return this.verb.participle() + this.complement;}
+	singular() {return this.verb.singular() + this.complement;}
+	gerund() {return this.verb.gerund() + this.complement;}
+}
+
+
+
+
+
+
+
+
+
+
+
 function getVerb(lemma) {
+	if (lemma.includes(' ')){
+		return new EnglishVerbPhrase(getVerb(lemma.substr(0,lemma.indexOf(' '))), lemma.substr(lemma.indexOf(' ')+1));
+	}
+	
 	let left = 0;
 	let right = englishVerbs.length;
 	
@@ -352,6 +449,8 @@ function getVerb(lemma) {
 		
 	}
 	
+	const msg = "no such english verb exists: " + lemma;
+	console.log(msg);
 	return null;
 }
 
@@ -379,22 +478,63 @@ function getRussianVerb(lemma) {
 }
 
 
-class EnglishVerbPhrase extends EnglishVerb {
-	verb;
-	complement;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class VerbPair {
+	imp;
+	perf;
+	translations;
+	predicates;
+	englishPreds;
+	properties;
 	
-	constructor(verb, complement){
-		if(typeof verb == "string"){
-			super();
-			this.verb = getVerb(verb) ?? new EnglishVerb(verb);
+	constructor(imp, perf, translations, predicates, englishPreds, properties={}) {
+		this.imp = getRussianVerb(imp);
+		this.perf = getRussianVerb(perf);
+		if(translations instanceof Array) {
+			this.translations = translations.map(v => getVerb(v));
+		} else {
+			this.translations = [getVerb(translations)];
 		}
-		
-		this.complement = " " + complement;
-		this.base = verb + this.complement;
+		this.predicates = predicates ?? [''];
+		this.englishPreds = englishPreds ?? [''];
+		this.properties = properties;
 	}
-	
-	past() {return this.verb.past() + this.complement;}
-	participle() {return this.verb.participle() + this.complement;}
-	singular() {return this.verb.singular() + this.complement;}
-	gerund() {return this.verb.gerund() + this.complement;}
 }

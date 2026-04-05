@@ -45,11 +45,12 @@ function construct_table(rows, columns) {
 
 
 
+
 let currentExercise;
 let testDeclensions = new Set([6]);
 let allowIrregulars = false;
 
-function wordlist(number) {
+function nounlist(number) {
 	let numberList;
 	switch(number){
 		case 0:
@@ -140,21 +141,23 @@ updateTable();
 
 
 // set up settings
-
-for(let i=0; i<6; i++){
-	
-	for(let n=0; n<2; n++){
-		const caseButton = document.createElement("button");
-		caseButton.innerHTML = nounCases[i] + [" singular"," plural"][n];
-		caseButton.declension = n*6 + i;
-		caseButton.onclick = function(){
-			testDeclensions = testDeclensions.symmetricDifference(new Set([this.declension]));
-			this.classList.toggle("pressed");
+function makeSettings() {
+	for(let i=0; i<6; i++){
+		
+		for(let n=0; n<2; n++){
+			const caseButton = document.createElement("button");
+			caseButton.innerHTML = nounCases[i] + [" singular"," plural"][n];
+			caseButton.declension = n*6 + i;
+			caseButton.onclick = function(){
+				testDeclensions = testDeclensions.symmetricDifference(new Set([this.declension]));
+				this.classList.toggle("pressed");
+			}
+			settings.appendChild(caseButton);
 		}
-		settings.appendChild(caseButton);
+		settings.appendChild(document.createElement("br"));
 	}
-	settings.appendChild(document.createElement("br"));
 }
+makeSettings();
 
 const irregButton = document.createElement("button");
 irregButton.innerHTML = "Allow Irregular Nouns";
@@ -271,21 +274,33 @@ function submitExercise() {
 
 function nextExercise() {
 	
-	const exDeclension = [...testDeclensions][Math.floor(Math.random()*testDeclensions.size)];
-	const number = Math.floor(exDeclension / 6);
-	
-	const exWordlist = wordlist(number);
-	
-	const templateList = nounExercises[exDeclension % 6];
-	const template = templateList[Math.floor(Math.random() * templateList.length)];
-	
-	
-	let c = Math.floor(Math.random() * exWordlist.length);
-	let noun = exWordlist[c];
-	
-	currentExercise = new template(noun,number);
+	if (partOfSpeech == "noun") {
+		const exDeclension = [...testDeclensions][Math.floor(Math.random()*testDeclensions.size)];
+		const number = Math.floor(exDeclension / 6);
+		
+		const exWordlist = nounlist(number);
+		
+		const templateList = nounExercises[exDeclension % 6];
+		const template = templateList[Math.floor(Math.random() * templateList.length)];
+		
+		
+		let c = Math.floor(Math.random() * exWordlist.length);
+		let noun = exWordlist[c];
+		
+		currentExercise = new template(noun,number);
+	} else if (partOfSpeech == "verb") {
+		const person = Math.floor(Math.random()*6);
+		
+		let c = Math.floor(Math.random() * verbPairsWithImperfect.length);
+		let vPair = verbPairsWithImperfect[c];
+		
+		currentExercise = new presentVerbExercise(vPair, person);
+	}
 	
 	prepareExercise(currentExercise);
 	
 }
 
+
+
+switch_pos();
