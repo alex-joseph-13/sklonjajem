@@ -88,7 +88,7 @@ class PerfectiveVerb {
 		} else if (infinitive[infinitive.length-3] == 'у'){
 			this.verbClass = 3;
 			this.regular = false;
-		} else if (infinitive[infinitive.length-3] != 'и'){
+		} else if (!['и','е'].includes(infinitive[infinitive.length-3])){
 			this.verbClass = 0;
 		} else if ('кгхжшщчц'.includes(infinitive[infinitive.length-4])){
 			this.verbClass = 2;
@@ -144,6 +144,9 @@ class PerfectiveVerb {
 		const stress = (this.stressShift && person>0) ? this.stressShift : this.stress;
 		
 		if(person in this.overrides){
+			if (this.overrides[person].includes('\u0301')){
+				return this.overrides[person];
+			}
 			return stressify(this.overrides[person], stress);
 		}
 		
@@ -190,8 +193,11 @@ class PerfectiveVerb {
 		
 		let suffix;
 		if(this.stem[this.stem.length-1] == 'й') {
-			// stem ends in a vowel
+			// stem ends in a vowel (verbClass = 0)
 			suffix = "";
+		} else if (vowels.includes(this.stem[this.stem.length-1])) {
+			// stem ends in a vowel (verbClass != 0)
+			suffix = "й";
 		} else if (this.stress > countVowels(this.stem)) {
 			// stress on the ending (I ought to be using the stress of the Я form if it is different from default)
 			suffix = "и";
@@ -448,7 +454,7 @@ function getVerb(lemma) {
 	}
 	
 	let left = 0;
-	let right = englishVerbs.length;
+	let right = englishVerbs.length-1;
 	
 	while (left <= right) {
 		const mid = Math.floor((left + right) / 2);
@@ -472,8 +478,12 @@ function getVerb(lemma) {
 
 
 function getRussianVerb(lemma) {
+	if(lemma == null){
+		return null;
+	}
+	
 	let left = 0;
-	let right = russianVerbs.length;
+	let right = russianVerbs.length - 1;
 	
 	while (left <= right) {
 		const mid = Math.floor((left + right) / 2);
@@ -490,6 +500,8 @@ function getRussianVerb(lemma) {
 		
 	}
 	
+	/*const msg = "no such russian verb exists: " + lemma;
+	console.log(msg);*/
 	return null;
 }
 

@@ -15,7 +15,7 @@ function sentenceCase(string) {
 
 
 partOfSpeech = "noun";
-let favoriteWords = irregularNouns;
+let favoriteWords = nouns;
 
 function switch_pos() {
 	$("pos_button").innerHTML = "switch to " + partOfSpeech + "s";
@@ -26,10 +26,14 @@ function switch_pos() {
 	} else {
 		partOfSpeech = "noun";
 		construct_table(8,3);
-		favoriteWords = irregularNouns;
+		favoriteWords = singularNouns;
 	}
 	updateTable();
 	makeSettings();
+	
+	quiz.hidden = true;
+	settings.hidden = false;
+	settings_button.innerHTML = "Start Practicing";
 }
 
 function construct_table(rows, columns) {

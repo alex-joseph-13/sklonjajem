@@ -56,9 +56,10 @@ nounExercises = [
 			constructor(noun, number) {
 				super(noun, 0, number);
 				
-				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
+				const c = Math.floor(Math.random()*3)
+				const verb = getRussianVerb(['работать','смотреть','говорить'][c]);
 				
-				this.englishSentence = "_ " + ((number==0 || noun.translation instanceof EnglishUncountableNoun) ? verb.translation.singular() : verb.translation.base) + ".";
+				this.englishSentence = "_ " + ((number==0 || noun.translation instanceof EnglishUncountableNoun) ? ['works','is watching','speaks'][c] : ['work','are watching','speak'][c]) + ".";
 				this.englishWord = "The " + noun.translation.num(number);
 				this.russianSentence = "_ " + verb.present(2 + 3*number) + ".";
 			}
@@ -119,11 +120,12 @@ nounExercises = [
 			constructor(noun, number) {
 				super(noun, 3, number);
 				
-				const verb = intransitiveVerbs[Math.floor(Math.random()*intransitiveVerbs.length)];
+				const c = Math.floor(Math.random()*2)
+				const verb = ['съесть','закрыть'][c];
 				
-				this.englishSentence = ((number==0 || noun.translation instanceof EnglishUncountableNoun) ? "_ needs to " : "_ need to ") + verb.translation.toString();
+				this.englishSentence = ((number==0 || noun.translation instanceof EnglishUncountableNoun) ? "_ needs to " : "_ need to ") + ['eat','close'][c];
 				this.englishWord = "the " + noun.translation.num(number);
-				this.russianSentence = "_ надо " + verb.inf;
+				this.russianSentence = "_ надо " + verb;
 				
 				
 			}

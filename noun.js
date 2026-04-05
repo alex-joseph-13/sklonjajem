@@ -185,7 +185,7 @@ class Noun {
 	}
 	
 	toString(){
-		return this.lemma();
+		return this.dictionaryForm();
 	}
 	
 	// cases: 0=nominative, 1=accusative, 2=genitive, 3=dative, 4=prepositional, 5=instrumental
@@ -263,12 +263,14 @@ class Noun {
 				break;
 			case 5:
 				// inst sing
-				if (declension <= 1){
-					output = stem + 'ом'
+				if (declension == 0){
+					output = stem + 'ом';
+				} else if (declension == 1){
+					output = stem + ( ('жцчшщ'.includes(stem[stem.length-1])&&stress<=countVowels(stem)) ? 'ём' : 'ом');
 				} else if (declension == 2){
-					output = stem + 'ой'
+					output = stem + ('жцчшщ'.includes(stem[stem.length-1]) ? 'ёй' : 'ой');
 				} else {
-					output = stem + 'ю'
+					output = stem + 'ю';
 				}
 				break;
 			case 6:
@@ -358,7 +360,7 @@ class Noun {
 	}
 	
 	
-	lemma() {
+	dictionaryForm() {
 		return this.decline(0,0);
 	}
 	
@@ -374,7 +376,7 @@ class DefectivePluralNoun extends Noun {
 		}
 	}
 	
-	lemma() {
+	dictionaryForm() {
 		return this.decline(0,1);
 	}
 	

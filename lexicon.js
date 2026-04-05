@@ -21,6 +21,17 @@ let englishVerbs = [
 	new EnglishVerb("create"),
 	new EnglishVerb("cause"),
 	new EnglishVerb("close"),
+	new EnglishVerb('consider'),
+	new EnglishVerb('think',{past:'thought'}),
+	new EnglishVerb('write',{past:'wrote',participle:'written'}),
+	new EnglishVerb('cost',{past:'cost'}),
+	new EnglishVerb('love'),
+	new EnglishVerb('fall',{past:'fell',participle:'fallen'}),
+	new EnglishVerb('watch'),
+	new EnglishVerb('listen'),
+	new EnglishVerb('give',{past:'gave',participle:'given'}),
+	new EnglishVerb('call'),
+	new EnglishVerb('want'),
 	
 ]
 
@@ -45,14 +56,22 @@ let perfectiveVerbs = [
 	new PerfectiveVerb("приготовить",{stress:3}),
 	new PerfectiveVerb("создать",{pastShift:true,overrides:['создам','создашь','создаст','создадим','создадите','создадут'],stressShift:3}),
 	new PerfectiveVerb("закрыть",{stem:"закрой"}),
+	new PerfectiveVerb("написать",{stem:'напиш',stressShift:true}),
+	new PerfectiveVerb("захотеть",{overrides:['захочу','захо́чешь','захо́чет']}),
+	new PerfectiveVerb("полюбить",{stressShift:true}),
+	new PerfectiveVerb("подумать",{stress:2}),
+	new PerfectiveVerb("посмотреть",{stressShift:true}),
+	new PerfectiveVerb("послушать",{stress:2}),
+	new PerfectiveVerb("дать",{pastShift:true,overrides:['дам','дашь','даст','дадим','дадите','дадут'],stressShift:2}),
+	new PerfectiveVerb("позвать",{stem:'позов',verbClass:4,stress:3}),
+
+	
 ]
 
 
 let imperfectiveVerbs = [
 
-	new ImperfectiveVerb("создавать",{stem:"созда",verbClass:3,irregCommand:'создавай'}),
 	new ImperfectiveVerb("закрывать"),
-
 	new ImperfectiveVerb("отправлять"),
 	new ImperfectiveVerb("забывать"),
 	new ImperfectiveVerb("изучать"),
@@ -68,6 +87,19 @@ let imperfectiveVerbs = [
 	new ImperfectiveVerb("помогать"),
 	new ImperfectiveVerb("говорить"),
 	new ImperfectiveVerb("готовить", {stress:2}),
+	new ImperfectiveVerb("создавать",{stem:"созда",verbClass:3,irregCommand:'создавай'}),
+	new ImperfectiveVerb('считать'),
+	new ImperfectiveVerb('писать',{stress:1}),
+	new ImperfectiveVerb('хотеть',{overrides:['хочу','хо́чешь','хо́чет'],stem:"хот"}),
+	new ImperfectiveVerb('стоить',{stress:1}),
+	new ImperfectiveVerb('любить',{stressShift:true}),
+	new ImperfectiveVerb('думать',{stress:1}),
+	new ImperfectiveVerb('смотреть',{stressShift:true}),
+	new ImperfectiveVerb('слушать',{stress:1}),
+	new ImperfectiveVerb('есть',{overrides:['ем','ешь','ест','едим','едите','едят'],stressShift:2,irregCommand:"ешь",irregPast:'ел'}),
+	//TODO fix missing stress on this verb ^
+	new ImperfectiveVerb('давать',{stem:"да",verbClass:3,irregCommand:'давай'}),
+	new ImperfectiveVerb('звать',{stem:'зов',verbClass:4,stress:2}),
 	
 ]
 
@@ -103,12 +135,23 @@ let verbPairs = [
 	new VerbPair('показывать','показать','show',['(д) фотогра́фию'],['(o) the picture']),
 	new VerbPair('обедать','пообедать','eat lunch',['','с дру́гом','с подру́гой'],['','with a friend ♂','with a friend ♀']),
 	new VerbPair('кашлять','кашлянуть','cough'),
-	new VerbPair('помогать','помочь','help',['(а)'],['(o)']),
+	new VerbPair('помогать','помочь','help',['(д)'],['(o)']),
 	new VerbPair('говорить','сказать','speak',['по-ру́сски','по-английски'],['Russian','English'],{noGerund:true}),
 	new VerbPair('готовить','приготовить','cook',['','крепы'],['','crepes']),
 	new VerbPair('создавать','создать',['create','cause'],['сайт','проблемы'],['a website','problems']),
 	new VerbPair('закрывать','закрыть','close',['глаза́','сайт'],['(rp) eyes','the website']),
-	//new VerbPair('считать', null, ['consider', 'think'], ['его идио́том',', что она́ врачи́ха'],['him an idiot',"that she's an doctor"]),
+	new VerbPair('считать', null, ['consider', 'think'], ['его идио́том',', что она́ врачи́ха'],['him an idiot',"that she's an doctor"],{noGerund:true}),
+	new VerbPair('писать','написать','write',['письмо́','кни́га'],['a letter','a book']),
+	new VerbPair('хотеть','захотеть','want',['написа́ть кни́га','посмотре́ть','помо́чь'],['to write a book','to see','to help'],{noGerund:true}),
+	new VerbPair('стоить',null,'cost',['де́сять до́лларов'],['$10'],{noGerund:true}),
+	new VerbPair('любить',null,'love',['(а)','гото́вить','есть'],['(o)','to cook','to eat'],{noGerund:true}),
+	new VerbPair(null,'полюбить','fall in love'),
+	new VerbPair('думать','подумать','think',[', чай готовый'],['the tea is ready'],{noGerund:true}),
+	new VerbPair('смотреть','посмотреть','watch',['телеви́зор','фильм'],['the TV','a movie']),
+	new VerbPair('слушать','послушать','listen',['ра́дио','му́зыку'],['to the radio','to music']),
+	new VerbPair('есть',null,'eat',['еда́'],['some food']),
+	new VerbPair('давать','дать','give',['(д) э́то','(д) пять до́лларов'],['(o) that','(o) five dollars']),
+	new VerbPair('звать','позвать','call',['его Шура','её Мина'],['him Shura','her Mina'],{noGerund:true}),
 	
 ]
 
@@ -152,7 +195,6 @@ let regularNouns = [
 	new Noun('урок','assignment'),
 	new Noun('язык','language',{stress:-1}),
 	new Noun('класс','class'),
-	new Noun('человек',['person','people'], {animate:true}),
 	new Noun('здание','building',{stress:1}),
 	new Noun('школа','school',{stress:1}),
 	new Noun('вопрос','question'),
@@ -165,8 +207,11 @@ let regularNouns = [
 	new Noun('место','place',{stress:1,pluralStress:-1}),
 	new Noun('мама','mom',{animate:true,stress:1}),
 	new Noun('креп','crepe'),
-	new Noun('писатель','author',{animate:true,stress:2}),
-	new Noun('врач','doctor',{animate:true,pluralStress:-1}),
+	new Noun('писатель','author (♂)',{animate:true,stress:2}),
+	new Noun('врач','doctor (♂)',{animate:true,stress:2}),
+	new Noun('писательница','author (♀)',{stress:2,animate:true}),
+	new Noun('врачиха','doctor (♀)',{stress:2,animate:true}),
+	new Noun('подруга','friend (♀)',{stress:2,animate:true}),
 	
 	new Noun('девушка','girl',{animate:true,stress:1,genPl:"девушек"}),
 	new Noun('идиотка','idiot (♀)',{animate:true,stress:3,genPl:"идиоток"}),
@@ -180,19 +225,20 @@ let singularNouns = [
 	new Noun('математика',['math'],{stress:3}),
 	new Noun('физика',['physics'],{stress:1}),
 	new Noun('образование','education',{stress:4}),
-	
+	new Noun('человек',['person','people'], {animate:true}),
 	new Noun('чай',['tea'],{pluralStress:-1}),
 ]
 
 let pluralNouns = [
 	new DefectivePluralNoun('деньга',['money'],{genPl:"денег",stress:1,stressChanges:{9:-1,10:-1}}),
+	//new DefectivePluralNoun('людя',['people'],{stress:1,animate:true,paradigmChanges:{8:'людей',11:'людьми'},stressChanges:{8:2,11:2}}),
 ]
 
 
 
 let irregularNouns = [
 	new Noun('парнь','guy',{stress:1,animate:true,paradigmChanges:["парень"],stressChanges:{8:2,9:2,10:2}}),
-	new Noun('друг','friend',{animate:true,pluralStem:"друзьй",pluralDeclension:0,pluralStress:-1,genPl:"друзей"}),
+	new Noun('друг','friend (♂)',{animate:true,pluralStem:"друзьй",pluralDeclension:0,pluralStress:-1,genPl:"друзей"}),
 	new Noun('глаз','eye',{pluralDeclension:0,pluralStress:-1}),
 	new Noun('днь','day',{paradigmChanges:['день']}),
 	new Noun('дом','house',{paradigmChanges:{6:'дома'},pluralStress:-1}),
