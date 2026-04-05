@@ -26,7 +26,7 @@ class Exercise {
 
 class NounExercise {
 	constructor(noun, nounCase, number) {
-		this.russianLemma = noun.toString();
+		this.russianLemma = noun;
 		this.englishWord = noun.translation.num(number);
 		this.russianWord = noun.decline(nounCase, number);
 		this.details = nounCases[nounCase] + [" singular"," plural"][number];
@@ -182,6 +182,9 @@ nounExercises = [
 
 
 
+
+
+
 class VerbExercise extends Exercise {
 	
 	/*russianLemma;
@@ -198,6 +201,8 @@ class VerbExercise extends Exercise {
 		
 		let es = englishPronouns[0][person] + " _ " + vPair.englishPreds[c] + ".";
 		let rs = russianPronouns[0][person] + " _ " + vPair.predicates[c] + ".";
+		es = es.replace(' .','.');
+		rs = rs.replace(' .','.');
 		rs = rs.replace(' ,',',');
 		this.russianLemma = isPerfective ? vPair.perf : vPair.imp;
 		this.englishLemma = vPair.translations[ (c >= vPair.translations.length) ? 0 : c ];
@@ -209,7 +214,6 @@ class VerbExercise extends Exercise {
 			} else if ((p == 1 || p == 4) && (person == 1 || person == 4)){
 				p = (p-1)/3 + 6;
 			}
-			console.log('replacing time');
 			
 			es = es.replace('(s)',englishPronouns[0][p]);
 			es = es.replace('(o)',englishPronouns[1][p]);
@@ -238,7 +242,7 @@ class presentVerbExercise extends VerbExercise {
 		
 		
 		if(vPair.properties.noGerund) {
-			this.englishWord = this.englishLemma.toString();
+			this.englishWord = [2,6,7].includes(person) ? this.englishLemma.singular() : this.englishLemma.base;
 		} else {
 			this.englishWord = this.englishLemma.gerund();
 			this.englishSentence = this.englishSentence.replace(englishPronouns[0][person],englishPronouns[3][person]);

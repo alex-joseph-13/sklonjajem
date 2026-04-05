@@ -22,13 +22,14 @@ function switch_pos() {
 	if (partOfSpeech == "noun") {
 		partOfSpeech = "verb";
 		construct_table(8,7);
-		favoriteWords = regularImperfectiveVerbs;
+		favoriteWords = russianVerbs;
 	} else {
 		partOfSpeech = "noun";
 		construct_table(8,3);
 		favoriteWords = irregularNouns;
 	}
 	updateTable();
+	makeSettings();
 }
 
 function construct_table(rows, columns) {
@@ -49,6 +50,7 @@ function construct_table(rows, columns) {
 let currentExercise;
 let testDeclensions = new Set([6]);
 let allowIrregulars = false;
+let allowRegulars = true;
 
 function nounlist(number) {
 	let numberList;
@@ -68,6 +70,17 @@ function nounlist(number) {
 	} else {
 		return regularNouns.concat(numberList);
 	}
+}
+
+function verbList() {
+	let ret = [];
+	if(allowRegulars) {
+		ret = ret.concat(regularVerbs);
+	}
+	if(allowIrregulars) {
+		ret = ret.concat(irregularVerbs);
+	}
+	return ret;
 }
 
 
@@ -141,7 +154,8 @@ updateTable();
 
 
 // set up settings
-function makeSettings() {
+function makeSettingsNoun() {
+	
 	for(let i=0; i<6; i++){
 		
 		for(let n=0; n<2; n++){
@@ -152,26 +166,65 @@ function makeSettings() {
 				testDeclensions = testDeclensions.symmetricDifference(new Set([this.declension]));
 				this.classList.toggle("pressed");
 			}
+			if (testDeclensions.has(n*6+i)) {
+				caseButton.classList.toggle("pressed");
+			}
 			settings.appendChild(caseButton);
 		}
 		settings.appendChild(document.createElement("br"));
 	}
+	
+	const irregButton = document.createElement("button");
+	irregButton.innerHTML = "Allow Irregular Nouns";
+	irregButton.style.marginTop = "20px";
+	irregButton.onclick = function(){
+		allowIrregulars = !allowIrregulars;
+		this.classList.toggle("pressed");
+	}
+	if (allowIrregulars) {
+		irregButton.classList.toggle("pressed");
+	}
+	settings.appendChild(irregButton);
+	
+	settings.children[12].disabled = true;
+	settings.children[13].disabled = true;
+	
 }
+
+function makeSettingsVerb() {
+	const regButton = document.createElement("button");
+	regButton.innerHTML = "Regular Verbs";
+	regButton.style.marginTop = "20px";
+	regButton.onclick = function(){
+		allowRegulars = !allowRegulars;
+		this.classList.toggle("pressed");
+	}
+	if(allowRegulars) regButton.classList.toggle("pressed");
+	settings.appendChild(regButton);
+	
+	const irregButton = document.createElement("button");
+	irregButton.innerHTML = "Irregular Verbs";
+	irregButton.style.marginTop = "20px";
+	irregButton.onclick = function(){
+		allowIrregulars = !allowIrregulars;
+		this.classList.toggle("pressed");
+	}
+	if (allowIrregulars) irregButton.classList.toggle("pressed");
+	settings.appendChild(irregButton);
+}
+
+function makeSettings() {
+	settings.innerHTML = "";
+	if(partOfSpeech == "noun"){
+		makeSettingsNoun();
+	} else if (partOfSpeech == "verb"){
+		makeSettingsVerb();
+	}
+}
+
 makeSettings();
 
-const irregButton = document.createElement("button");
-irregButton.innerHTML = "Allow Irregular Nouns";
-irregButton.style.marginTop = "20px";
-irregButton.onclick = function(){
-	allowIrregulars = !allowIrregulars;
-	this.classList.toggle("pressed");
-}
-settings.appendChild(irregButton);
 
-settings.children[1].classList.toggle("pressed");
-settings.children[12].disabled = true;
-settings.children[13].disabled = true;
-//settings.children[12].classList.toggle("pressed");
 
 
 
@@ -180,13 +233,13 @@ function click_settings_button() {
 		quiz.hidden = true;
 		settings.hidden = false;
 		settings_button.innerHTML = "Close Settings";
-	} else if (testDeclensions.size > 0){
+	} else if ( (partOfSpeech == "noun" && testDeclensions.size > 0) || (partOfSpeech == "verb" && (allowIrregulars || allowRegulars)) ){
 		quiz.hidden = false;
 		settings.hidden = true;
 		settings_button.innerHTML = "Settings";
 		nextExercise();
 	} else {
-		window.alert("You must select at least one case to practice.");
+		window.alert("You must make at least one selection to practice.");
 	}
 }
 
@@ -220,7 +273,7 @@ function prepareExercise(exercise) {
 		exercise.englishSentence.replace("_",
 		"<b>" + exercise.englishWord + "</b>"
 	));
-	$("russian_lemma").innerHTML = "<b>" + exercise.russianLemma + "</b>";
+	$("russian_lemma").innerHTML = "<b>" + exercise.russianLemma.dictionaryForm() + "</b>";
 	
 	
 	const helpButton = document.createElement('button');
@@ -284,15 +337,21 @@ function nextExercise() {
 		const template = templateList[Math.floor(Math.random() * templateList.length)];
 		
 		
-		let c = Math.floor(Math.random() * exWordlist.length);
+		const c = Math.floor(Math.random() * exWordlist.length);
 		let noun = exWordlist[c];
 		
 		currentExercise = new template(noun,number);
 	} else if (partOfSpeech == "verb") {
 		const person = Math.floor(Math.random()*6);
 		
-		let c = Math.floor(Math.random() * verbPairsWithImperfect.length);
-		let vPair = verbPairsWithImperfect[c];
+		let vPair;
+		while(true) {
+			let c = Math.floor(Math.random() * verbPairs.length);
+			vPair = verbPairs[c];
+			if(!!vPair.imp && ((allowRegulars && vPair.imp.regular) || (allowIrregulars && !vPair.imp.regular)) ){
+				break;
+			}
+		}
 		
 		currentExercise = new presentVerbExercise(vPair, person);
 	}

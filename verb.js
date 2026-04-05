@@ -20,6 +20,7 @@ const presentEndings =[
 	['у','ешь','ет','ем','ете','ут'],
 	['ю','ишь','ит','им','ите','ят'],
 	['у','ишь','ит','им','ите','ат'],
+	['ю','ёшь','ёт','ём','ёте','ют'],
 	['у','ёшь','ёт','ём','ёте','ут'],
 ]
 
@@ -63,6 +64,7 @@ class PerfectiveVerb {
 	pastShift;
 	irregCommand;
 	irregPast;
+	regular;
 	
 	// params:
 	//  stem (if different from default)
@@ -76,12 +78,16 @@ class PerfectiveVerb {
 	//  overrides (all present/future forms, if different from computed)
 	constructor(infinitive, params={}){
 		
+		this.regular = true;
+		
 		// verb class 1 ends in -ить, class 0 ends in -ть
 		//  (usually called 2 and 1 respectively)
 		if (!!params.verbClass) {
 			this.verbClass = params.verbClass;
+			this.regular = false;
 		} else if (infinitive[infinitive.length-3] == 'у'){
 			this.verbClass = 3;
+			this.regular = false;
 		} else if (infinitive[infinitive.length-3] != 'и'){
 			this.verbClass = 0;
 		} else if ('кгхжшщчц'.includes(infinitive[infinitive.length-4])){
@@ -100,6 +106,7 @@ class PerfectiveVerb {
 			}
 		} else {
 			this.stem = params.stem;
+			this.regular = false;
 		}
 		
 		this.stress = params.stress ?? countVowels(infinitive);
@@ -108,17 +115,26 @@ class PerfectiveVerb {
 		this.pastShift = !!params.pastShift;
 		this.irregCommand = params.irregCommand ?? null;
 		this.irregPast = params.irregPast ?? null;
-		this.overrides = params.overrides ?? [];
+		if ( !!this.irregCommand || !!this.irregPast ) {
+			this.regular = false;
+		}
+		
+		if (!!params.overrides) {
+			this.overrides = params.overrides;
+			this.regular = false;
+		} else {
+			this.overrides = [];
+		}
 		
 		this.inf = infinitive;
 		
 	}
 	
 	toString() {
-		return this.inf.replace('\u0301','');
+		return this.inf;
 	}
 	
-	infinitive() {
+	dictionaryForm() {
 		return stressify(this.inf, this.stress);
 	}
 	
@@ -217,7 +233,7 @@ class PerfectiveVerb {
 			['past',this.past(0),this.past(1),this.past(2),this.past(3)],
 			[],
 			['','Ты','Вы'],
-			['command',this.command(0),this.command(1),"",this.infinitive()],
+			['command',this.command(0),this.command(1),"",this.dictionaryForm()],
 			[],
 		]
 	}
@@ -263,7 +279,7 @@ class ImperfectiveVerb extends PerfectiveVerb {
 			['past',this.past(0),this.past(1),this.past(2),this.past(3)],
 			[],
 			['','Ты','Вы'],
-			['command',this.command(0),this.command(1),"",this.infinitive()],
+			['command',this.command(0),this.command(1),"",this.dictionaryForm()],
 		]
 	}
 	

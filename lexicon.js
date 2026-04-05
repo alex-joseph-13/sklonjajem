@@ -34,7 +34,7 @@ let perfectiveVerbs = [
 	new PerfectiveVerb("сделать",{stress:1}),
 	new PerfectiveVerb("узнать"),
 	new PerfectiveVerb("прочитать"),
-	new PerfectiveVerb("понять",{stem:"пойм",verbClass:3,command:'пойми',pastStress:1,pastShift:true}),
+	new PerfectiveVerb("понять",{stem:"пойм",verbClass:4,command:'пойми',pastStress:1,pastShift:true}),
 	new PerfectiveVerb("поработать",{stress:3}),
 	new PerfectiveVerb("решить"),
 	new PerfectiveVerb("показать",{stem:'покаж',stressShift:true}),
@@ -48,9 +48,9 @@ let perfectiveVerbs = [
 ]
 
 
-let regularImperfectiveVerbs = [
+let imperfectiveVerbs = [
 
-	new ImperfectiveVerb("создавать",{stem:"создай",verbClass:2}),
+	new ImperfectiveVerb("создавать",{stem:"созда",verbClass:3,irregCommand:'создавай'}),
 	new ImperfectiveVerb("закрывать"),
 
 	new ImperfectiveVerb("отправлять"),
@@ -71,7 +71,7 @@ let regularImperfectiveVerbs = [
 	
 ]
 
-const russianVerbs = regularImperfectiveVerbs.concat(perfectiveVerbs).sort(); //TODO update this by adding the rest of the verbs
+const russianVerbs = imperfectiveVerbs.concat(perfectiveVerbs).sort();
 
 
 
@@ -112,7 +112,6 @@ let verbPairs = [
 	
 ]
 
-const verbPairsWithImperfect = verbPairs.filter( p => !!p.imp )
 
 
 
