@@ -196,9 +196,11 @@ class VerbExercise extends Exercise {
 	russianWord;
 	details;*/
 	englishLemma;
+	vPair;
 	
-	constructor (vPair, person, isPerfective) {
+	constructor (vPair, person, isPerfective, showBothVerbs) {
 		super();
+		this.vPair = vPair;
 		
 		const c = Math.floor(Math.random() * vPair.predicates.length);
 		
@@ -233,6 +235,7 @@ class VerbExercise extends Exercise {
 		
 		this.englishSentence = es;
 		this.russianSentence = rs;
+		
 		
 	}
 	
@@ -281,8 +284,25 @@ class futurePerfectiveVerbExercise extends VerbExercise {
 	}
 }
 
+class futureImperfectiveVerbExercise extends VerbExercise {
+	constructor(vPair, person) {
+		super(vPair, person, false);
+		
+		this.englishWord = "will " + this.englishLemma.base;
+		this.russianWord = this.russianLemma.future(person);
+		
+		this.englishSentence = this.englishSentence.slice(0,-1) + ' every day.'
+		this.russianSentence = this.russianSentence.slice(0,-1) + ' ежедне́вно';
+		
+		if(person >= 6) {person = 2};
+		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future imperfective";
+		
+	}
+}
+
 
 
 // this is needed to determine which type of verb to get after the exercise type is chosen
 presentVerbExercise.isPerfective = false;
 futurePerfectiveVerbExercise.isPerfective = true;
+futureImperfectiveVerbExercise.isPerfective = false;

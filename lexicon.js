@@ -64,7 +64,8 @@ let perfectiveVerbs = [
 	new PerfectiveVerb("послушать",{stress:2}),
 	new PerfectiveVerb("дать",{pastShift:true,overrides:['дам','дашь','даст','дадим','дадите','дадут'],stressShift:2}),
 	new PerfectiveVerb("позвать",{stem:'позов',verbClass:4,stress:3}),
-
+	new PerfectiveVerb('съесть',{overrides:['съем','съешь','съест','съедим','съедите','съедят'],stressShift:2,irregCommand:'съешь',irregPast:"съел"}),
+	new PerfectiveVerb('поесть',{overrides:['поем','поешь','поест','поедим','поедите','поедят'],stress:2,stressShift:3,irregCommand:'поешь',irregPast:"поел"}),
 	
 ]
 
@@ -100,10 +101,12 @@ let imperfectiveVerbs = [
 	//TODO fix missing stress on this verb ^
 	new ImperfectiveVerb('давать',{stem:"да",verbClass:3,irregCommand:'давай'}),
 	new ImperfectiveVerb('звать',{stem:'зов',verbClass:4,stress:2}),
-	
 ]
 
 const russianVerbs = imperfectiveVerbs.concat(perfectiveVerbs).sort();
+
+let newVerbs = [
+]
 
 
 
@@ -149,9 +152,10 @@ let verbPairs = [
 	new VerbPair('думать','подумать','think',[', чай готовый'],['the tea is ready'],{noGerund:true}),
 	new VerbPair('смотреть','посмотреть','watch',['телеви́зор','фильм'],['the TV','a movie']),
 	new VerbPair('слушать','послушать','listen',['ра́дио','му́зыку'],['to the radio','to music']),
-	new VerbPair('есть',null,'eat',['еда́'],['some food']),
+	new VerbPair('есть','поесть','eat',['еда́','банан'],['some food','a banana']),
+	new VerbPair('есть','съесть','eat',['ку́ча еды́'],['a lot of food']),
 	new VerbPair('давать','дать','give',['(д) э́то','(д) пять до́лларов'],['(o) that','(o) five dollars']),
-	new VerbPair('звать','позвать','call',['его Шура','её Мина'],['him Shura','her Mina'],{noGerund:true}),
+	new VerbPair('звать','позвать','call',['его Шура','её Мина','её Соня','её Настя','её Вика','его Тёма','его Женя','его Ваня'],['him Shura','her Mina','her Sonya','her Nastya','her Vika','him Tyoma','him Zhenya','him Vanya'],{noGerund:true}),
 	
 ]
 

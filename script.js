@@ -56,6 +56,7 @@ let testDeclensions = new Set([6]);
 let verbTemplates = new Set([presentVerbExercise,futurePerfectiveVerbExercise]);
 let allowIrregulars = false;
 let allowRegulars = true;
+let showBothVerbs = false;
 
 function nounlist(number) {
 	let numberList;
@@ -204,9 +205,18 @@ function makeSettingsVerb() {
 		verbTemplates = verbTemplates.symmetricDifference(new Set([presentVerbExercise]));
 		this.classList.toggle("pressed");
 	}
-	if(verbTemplates.has(presentVerbExercise)){
-		tButton.classList.toggle("pressed");
+	if(verbTemplates.has(presentVerbExercise)) tButton.classList.toggle("pressed");
+	settings.appendChild(tButton);
+	
+	settings.appendChild(document.createElement("br"));
+	
+	tButton = document.createElement("button");
+	tButton.innerHTML = "Future Imperfective";
+	tButton.onclick = function(){
+		verbTemplates = verbTemplates.symmetricDifference(new Set([futureImperfectiveVerbExercise]));
+		this.classList.toggle("pressed");
 	}
+	if(verbTemplates.has(futureImperfectiveVerbExercise)) tButton.classList.toggle("pressed");
 	settings.appendChild(tButton);
 	
 	tButton = document.createElement("button");
@@ -215,9 +225,7 @@ function makeSettingsVerb() {
 		verbTemplates = verbTemplates.symmetricDifference(new Set([futurePerfectiveVerbExercise]));
 		this.classList.toggle("pressed");
 	}
-	if(verbTemplates.has(futurePerfectiveVerbExercise)){
-		tButton.classList.toggle("pressed");
-	}
+	if(verbTemplates.has(futurePerfectiveVerbExercise)) tButton.classList.toggle("pressed");
 	settings.appendChild(tButton);
 	
 	settings.appendChild(document.createElement("br"));
@@ -241,6 +249,18 @@ function makeSettingsVerb() {
 	}
 	if (allowIrregulars) irregButton.classList.toggle("pressed");
 	settings.appendChild(irregButton);
+	
+	settings.appendChild(document.createElement("br"));
+	
+	tButton = document.createElement("button");
+	tButton.style.marginTop = '20px'
+	tButton.innerHTML = "Test me on imperfect vs perfective";
+	tButton.onclick = function() {
+		showBothVerbs = !showBothVerbs;
+		this.classList.toggle("pressed");
+	}
+	if (showBothVerbs) tButton.toggle("pressed");
+	settings.appendChild(tButton);
 }
 
 function makeSettings() {
@@ -304,7 +324,11 @@ function prepareExercise(exercise) {
 		exercise.englishSentence.replace("_",
 		"<b>" + exercise.englishWord + "</b>"
 	));
-	$("russian_lemma").innerHTML = "<b>" + exercise.russianLemma.dictionaryForm() + "</b>";
+	if(partOfSpeech == "verb" && showBothVerbs){
+		$("russian_lemma").innerHTML = "<b>" + exercise.vPair.toString() + "</b>";
+	} else {
+		$("russian_lemma").innerHTML = "<b>" + exercise.russianLemma.dictionaryForm() + "</b>";
+	}
 	
 	
 	const helpButton = document.createElement('button');

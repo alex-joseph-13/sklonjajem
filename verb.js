@@ -568,12 +568,12 @@ class VerbPair {
 	
 	toString() {
 		if(this.perf == null){
-			return this.imp.infinitive();
+			return this.imp.dictionaryForm();
 		}
 		if(this.imp == null){
-			return this.perf.infinitive();
+			return this.perf.dictionaryForm();
 		}
-		return this.imp.infinitive() + " / " + this.perf.infinitive();
+		return this.imp.dictionaryForm() + " / " + this.perf.dictionaryForm();
 	}
 	
 	getVerb(i) {
