@@ -199,6 +199,7 @@ class VerbExercise extends Exercise {
 	
 	constructor (vPair, person, isPerfective) {
 		super();
+		
 		const c = Math.floor(Math.random() * vPair.predicates.length);
 		
 		let es = englishPronouns[0][person] + " _ " + vPair.englishPreds[c] + ".";
@@ -252,6 +253,36 @@ class presentVerbExercise extends VerbExercise {
 		
 		this.russianWord = this.russianLemma.present(person);
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " present";
+		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " present (imperfective)";
 	}
 }
+
+const fpSentenceEndingsEn = [" at noon."," tomorrow."];
+const fpSentenceEndingsRu = [" в по́лдень."," за́втра."];
+
+class futurePerfectiveVerbExercise extends VerbExercise {
+	constructor(vPair, person) {
+		super(vPair, person, true);
+		
+		this.englishWord = "will " + this.englishLemma.base;
+		this.russianWord = this.russianLemma.future(person);
+		let c;
+		if(vPair.properties.noGerund){
+			c = 0;
+		} else {
+			c = +(Math.random()>0.75);
+		}
+		this.englishSentence = this.englishSentence.slice(0,-1) + fpSentenceEndingsEn[c];
+		this.russianSentence = this.russianSentence.slice(0,-1) + fpSentenceEndingsRu[c];
+		
+		if(person >= 6) {person = 2};
+		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future perfective";
+		
+	}
+}
+
+
+
+// this is needed to determine which type of verb to get after the exercise type is chosen
+presentVerbExercise.isPerfective = false;
+futurePerfectiveVerbExercise.isPerfective = true;

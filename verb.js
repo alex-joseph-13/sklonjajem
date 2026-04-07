@@ -565,4 +565,18 @@ class VerbPair {
 		this.englishPreds = englishPreds ?? [''];
 		this.properties = properties;
 	}
+	
+	toString() {
+		if(this.perf == null){
+			return this.imp.infinitive();
+		}
+		if(this.imp == null){
+			return this.perf.infinitive();
+		}
+		return this.imp.infinitive() + " / " + this.perf.infinitive();
+	}
+	
+	getVerb(i) {
+		return (!!i) ? this.perf : this.imp;
+	}
 }

@@ -53,6 +53,7 @@ function construct_table(rows, columns) {
 
 let currentExercise;
 let testDeclensions = new Set([6]);
+let verbTemplates = new Set([presentVerbExercise,futurePerfectiveVerbExercise]);
 let allowIrregulars = false;
 let allowRegulars = true;
 
@@ -196,6 +197,31 @@ function makeSettingsNoun() {
 }
 
 function makeSettingsVerb() {
+	
+	let tButton = document.createElement("button");
+	tButton.innerHTML = "Present";
+	tButton.onclick = function(){
+		verbTemplates = verbTemplates.symmetricDifference(new Set([presentVerbExercise]));
+		this.classList.toggle("pressed");
+	}
+	if(verbTemplates.has(presentVerbExercise)){
+		tButton.classList.toggle("pressed");
+	}
+	settings.appendChild(tButton);
+	
+	tButton = document.createElement("button");
+	tButton.innerHTML = "Future Perfective";
+	tButton.onclick = function(){
+		verbTemplates = verbTemplates.symmetricDifference(new Set([futurePerfectiveVerbExercise]));
+		this.classList.toggle("pressed");
+	}
+	if(verbTemplates.has(futurePerfectiveVerbExercise)){
+		tButton.classList.toggle("pressed");
+	}
+	settings.appendChild(tButton);
+	
+	settings.appendChild(document.createElement("br"));
+	
 	const regButton = document.createElement("button");
 	regButton.innerHTML = "Regular Verbs";
 	regButton.style.marginTop = "20px";
@@ -237,7 +263,8 @@ function click_settings_button() {
 		quiz.hidden = true;
 		settings.hidden = false;
 		settings_button.innerHTML = "Close Settings";
-	} else if ( (partOfSpeech == "noun" && testDeclensions.size > 0) || (partOfSpeech == "verb" && (allowIrregulars || allowRegulars)) ){
+	} else if ( (partOfSpeech == "noun" && testDeclensions.size>0) ||
+			  (partOfSpeech == "verb" && (allowIrregulars || allowRegulars) && verbTemplates.size>0) ){
 		quiz.hidden = false;
 		settings.hidden = true;
 		settings_button.innerHTML = "Settings";
@@ -346,18 +373,21 @@ function nextExercise() {
 		
 		currentExercise = new template(noun,number);
 	} else if (partOfSpeech == "verb") {
-		const person = Math.floor(Math.random()*6);
+		const template = [...verbTemplates][Math.floor(Math.random()*verbTemplates.size)];
+		const isPerfective = template.isPerfective;
+		
+		const person = Math.floor(Math.random()*8);
 		
 		let vPair;
 		while(true) {
 			let c = Math.floor(Math.random() * verbPairs.length);
 			vPair = verbPairs[c];
-			if(!!vPair.imp && ((allowRegulars && vPair.imp.regular) || (allowIrregulars && !vPair.imp.regular)) ){
+			if(!!vPair.getVerb(isPerfective) && ((allowRegulars && vPair.getVerb(isPerfective).regular) || (allowIrregulars && !vPair.getVerb(isPerfective).regular)) ){
 				break;
 			}
 		}
 		
-		currentExercise = new presentVerbExercise(vPair, person);
+		currentExercise = new template(vPair, person);
 	}
 	
 	prepareExercise(currentExercise);
