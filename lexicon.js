@@ -216,11 +216,30 @@ let regularNouns = [
 	new Noun('писательница','author (♀)',{stress:2,animate:true}),
 	new Noun('врачиха','doctor (♀)',{stress:2,animate:true}),
 	new Noun('подруга','friend (♀)',{stress:2,animate:true}),
-	
 	new Noun('девушка','girl',{animate:true,stress:1,genPl:"девушек"}),
 	new Noun('идиотка','idiot (♀)',{animate:true,stress:3,genPl:"идиоток"}),
 	new Noun('эсэмэска','text message',{stress:3,genPl:'эсэмэсок'}),
-	
+	new Noun('лисица','fox',{animate:true,stress:2}),
+	new Noun('поле','field',{stress:1,pluralStress:2}),
+	new Noun('библиотека','library',{stress:4}),
+	new Noun('кабинет','office'),
+	new Noun('ряд',['series','-'],{pluralStress:2}),
+	new Noun('женщина',['woman','women'],{stress:1,animate:true}),
+	new Noun('мужчина',['man','men'],{stress:2,animate:true}),
+	new Noun('спина','back',{pluralStress:1,stressChanges:{1:1}}),
+	new Noun('живот','stomach',{stress:3}),
+	new Noun('кузен','cousin (♂)',{animate:true}),
+	new Noun('кузина','cousin (♀)',{stress:2,animate:true}),
+	new Noun('тётя','aunt',{stress:1,animate:true}),
+	new Noun('дочка','daughter',{stress:1,animate:true}),
+	new Noun('бабушка','grandmother',{stress:1,animate:true}),
+	new Noun('дед','grandfather',{animate:true}),
+	new Noun('внук','grandson',{animate:true}),
+	new Noun('внучка','granddaughter',{stress:1,animate:true}),
+	new Noun('родитель','parent',{stress:2,animate:true}),
+	new Noun('семья','family',{pluralStress:1,stressChanges:{8:2}}),
+	new Noun('племянник','nephew',{stress:2,animate:true}),
+	new Noun('племянница','niece',{stress:2,animate:true}),
 ]
 
 
@@ -229,13 +248,21 @@ let singularNouns = [
 	new Noun('математика',['math'],{stress:3}),
 	new Noun('физика',['physics'],{stress:1}),
 	new Noun('образование','education',{stress:4}),
-	new Noun('человек',['person','people'], {animate:true}),
 	new Noun('чай',['tea'],{pluralStress:-1}),
+	new Noun('работа',['work'],{stress:2}),
+	new Noun('завтрак',['breakfast'],{stress:1}),
+	new Noun('обед',['lunch']),
+	new Noun('ужин',['dinner'],{stress:1}),
+	new Noun('боль',['pain'],{declension:3}),
+	new Noun('лапша',['noodles'],{genPl:'лапшей'}),
+	new Noun('кожа',['skin'],{stress:1}),
+	new Noun('волос',['hair'],{stress:1,pluralStress:3,stressChanges:{6:1},genPl:'волос'}),
+	
 ]
 
 let pluralNouns = [
 	new DefectivePluralNoun('деньга',['money'],{genPl:"денег",stress:1,stressChanges:{9:-1,10:-1}}),
-	//new DefectivePluralNoun('людя',['people'],{stress:1,animate:true,paradigmChanges:{8:'людей',11:'людьми'},stressChanges:{8:2,11:2}}),
+	
 ]
 
 
@@ -247,6 +274,15 @@ let irregularNouns = [
 	new Noun('днь','day',{paradigmChanges:['день']}),
 	new Noun('дом','house',{paradigmChanges:{6:'дома'},pluralStress:-1}),
 	new Noun('отц','father',{animate:true,paradigmChanges:['отец']}),
+	new Noun('орл','eagle',{animate:true,paradigmChanges:['орёл']}),
+	new Noun('дерево','tree',{stress:1,pluralStem:'деревьй',genPl:'деревьев',pluralStress:2}),
+	new Noun('цвет','color',{paradigmChanges:{6:'цвета'},pluralStress:2}),
+	new Noun('брат','brother',{animate:true,pluralStem:'братьй',paradigmChanges:{6:'братья'}}),
+	new Noun('сёстра','sister',{animate:true,pluralStress:1,genPl:'сестёр',stressChanges:{8:2}}),
+	new Noun('дядя','uncle',{stress:1,animate:true,genPl:'дядей'}),
+	new Noun('сын','son',{animate:true,pluralStem:'сыновьй',pluralDeclension:0,pluralStress:3,genPl:'сыновей'}),
+	new Noun('ребёнк','child',{stress:2,paradigmChanges:{0:'ребёнок',11:'детьми'},pluralStem:'деть',pluralStress:1,stressChanges:{8:2,11:2},animate:true}),
+	new Noun('человек',['person','people'],{animate:true,pluralStem:'людь',pluralStress:1,paradigmChanges:{11:'людьми'},stressChanges:{8:2,11:2}}),
 ]
 
 let newNouns = [

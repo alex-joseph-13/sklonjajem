@@ -15,7 +15,7 @@ function sentenceCase(string) {
 
 
 partOfSpeech = "noun";
-let favoriteWords = nouns;
+let favoriteWords = newNouns;
 
 function switch_pos() {
 	$("pos_button").innerHTML = "switch to " + partOfSpeech + "s";
@@ -420,4 +420,4 @@ function nextExercise() {
 
 
 
-switch_pos();
+//switch_pos();

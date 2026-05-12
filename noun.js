@@ -255,7 +255,7 @@ class Noun {
 				// prep sing
 				if (declension == 3){
 					output = stem + 'ы'
-				} else if (this.base[this.base.length-2] == 'и') {
+				} else if (this.base.substr(this.base.length-2) == 'ий') {
 					output = stem + 'ы'
 				} else {
 					output = stem + 'е'
@@ -267,8 +267,8 @@ class Noun {
 					output = stem + 'ом';
 				} else if (declension == 1){
 					output = stem + ( ('жцчшщ'.includes(stem[stem.length-1])&&stress<=countVowels(stem)) ? 'ём' : 'ом');
-				} else if (declension == 2){
-					output = stem + ('жцчшщ'.includes(stem[stem.length-1]) ? 'ёй' : 'ой');
+				} else if (declension == 2) {
+					output = stem + ( ('жцчшщ'.includes(stem[stem.length-1])&&stress<=countVowels(stem)) ? 'eй' : 'ой');
 				} else {
 					output = stem + 'ю';
 				}
@@ -293,14 +293,18 @@ class Noun {
 				// gen pl
 				if (declension == 1 && stem[stem.length-2] == 'ц') {
 					output = stem + 'ев'
-				} else if (declension != 2 && ['ь','ч','ж','ш','щ'].includes(stem[stem.length-1])){
+				} else if (declension != 2 && ['ь','ч','ж','ш','щ','й'].includes(stem[stem.length-1])){
 					output = stem + 'ей'
 				} else if (declension == 1){
 					output = stem + 'ов'
 				} else {
 					// remove the vowel from the end, but two consonants in a row are not allowed at word end
-					if ( (!vowels.includes(stem[stem.length-1])) && !vowels.concat('с').includes(stem[stem.length-2]) ) {
-						const epenthetic = (['ш','ь'].includes(stem[stem.length-2])) ? 'e' : 'o';
+					if (stem.substr(stem.length-2) == 'ьй'){
+						output = stem.substr(0,stem.length-2) + 'ей';
+					} else if (stem[stem.length-1] == 'й' && !vowels.includes(stem[stem.length-2])) {
+						output = stem.substr(0,stem.length-1) + 'ь';
+					} else if ( (!vowels.includes(stem[stem.length-1])) && !vowels.concat('с').includes(stem[stem.length-2]) ) {
+						const epenthetic = ('шчь'.includes(stem[stem.length-2])) ? 'е' : 'о';
 						output = stem.substr(0,stem.length-1) + epenthetic + stem[stem.length-1];
 					} else {
 						output = stem;
@@ -336,8 +340,6 @@ class Noun {
 		output = output.replace('чы','чи');
 		
 		output = stressify(output, stress);
-		
-		
 		
 		return output;
 		
