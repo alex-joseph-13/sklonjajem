@@ -15,7 +15,7 @@ function sentenceCase(string) {
 
 
 partOfSpeech = "noun";
-let favoriteWords = newNouns;
+let favoriteWords = irregularNouns.reverse();
 
 function switch_pos() {
 	$("pos_button").innerHTML = "switch to " + partOfSpeech + "s";
@@ -59,23 +59,24 @@ let allowRegulars = true;
 let showBothVerbs = false;
 
 function nounlist(number) {
-	let numberList;
-	switch(number){
-		case 0:
-			numberList = singularNouns;
-			break;
-		case 1:
-			numberList = pluralNouns;
-			break;
-		case 2:
-			numberList = singularNouns.concat(pluralNouns);
-			break;
+	let ret = [];
+	if(allowRegulars) {
+		switch(number){
+			case 0:
+				ret = regularNouns.concat(singularNouns);
+				break;
+			case 1:
+				ret = regularNouns.concat(pluralNouns);
+				break;
+			case 2:
+				ret = regularNouns.concat(singularNouns,pluralNouns);
+				break;
+		}
 	}
 	if (allowIrregulars) {
-		return regularNouns.concat(irregularNouns, numberList);
-	} else {
-		return regularNouns.concat(numberList);
+		ret = ret.concat(irregularNouns);
 	}
+	return ret;
 }
 
 function verbList() {
@@ -180,16 +181,24 @@ function makeSettingsNoun() {
 		settings.appendChild(document.createElement("br"));
 	}
 	
+	const regButton = document.createElement("button");
+	regButton.innerHTML = "Regular Nouns";
+	regButton.style.marginTop = "20px";
+	regButton.onclick = function(){
+		allowRegulars = !allowRegulars;
+		this.classList.toggle("pressed");
+	}
+	if(allowRegulars) regButton.classList.toggle("pressed");
+	settings.appendChild(regButton);
+	
 	const irregButton = document.createElement("button");
-	irregButton.innerHTML = "Allow Irregular Nouns";
+	irregButton.innerHTML = "Irregular Nouns";
 	irregButton.style.marginTop = "20px";
 	irregButton.onclick = function(){
 		allowIrregulars = !allowIrregulars;
 		this.classList.toggle("pressed");
 	}
-	if (allowIrregulars) {
-		irregButton.classList.toggle("pressed");
-	}
+	if (allowIrregulars) irregButton.classList.toggle("pressed");
 	settings.appendChild(irregButton);
 	
 	settings.children[12].disabled = true;
