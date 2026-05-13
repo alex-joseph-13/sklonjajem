@@ -277,11 +277,11 @@ let irregularNouns = [
 	new Noun('орл','eagle',{animate:true,paradigmChanges:['орёл']}),
 	new Noun('дерево','tree',{stress:1,pluralStem:'деревьй',genPl:'деревьев',pluralStress:2}),
 	new Noun('цвет','color',{paradigmChanges:{6:'цвета'},pluralStress:2}),
-	new Noun('брат','brother',{animate:true,pluralStem:'братьй',paradigmChanges:{6:'братья'}}),
+	new Noun('брат','brother',{animate:true,pluralStem:'братьй',paradigmChanges:{6:'братья',8:'братьев'}}),
 	new Noun('сёстра','sister',{animate:true,pluralStress:1,genPl:'сестёр',stressChanges:{8:2}}),
 	new Noun('дядя','uncle',{stress:1,animate:true,genPl:'дядей'}),
 	new Noun('сын','son',{animate:true,pluralStem:'сыновьй',pluralDeclension:0,pluralStress:3,genPl:'сыновей'}),
-	new Noun('ребёнк','child',{stress:2,paradigmChanges:{0:'ребёнок',11:'детьми'},pluralStem:'деть',pluralStress:1,stressChanges:{8:2,11:2},animate:true}),
+	new Noun('ребёнк',['child','children'],{stress:2,paradigmChanges:{0:'ребёнок',11:'детьми'},pluralStem:'деть',pluralStress:1,stressChanges:{8:2,11:2},animate:true}),
 	new Noun('человек',['person','people'],{animate:true,pluralStem:'людь',pluralStress:1,paradigmChanges:{11:'людьми'},stressChanges:{8:2,11:2}}),
 ]
 

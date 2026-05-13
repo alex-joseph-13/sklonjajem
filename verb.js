@@ -385,7 +385,7 @@ class EnglishVerb {
 			return (this.specialSingular == "-") ? this.base : this.specialSingular;
 		}
 		
-		if (['s','z'].includes(base[base.length-1])) {
+		if ('szx'.includes(base[base.length-1])) {
 			return base + 'es';
 		} else if (['ch','sh'].includes(base.substr(base.length-2,2))) {
 			return base + 'es';

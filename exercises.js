@@ -5,7 +5,7 @@ function prepForm(prep, noun) {
 	if (countVowels(noun) <= 1 && !vowels.includes(noun[0]) && !vowels.includes(noun[1]) ) {
 		return prep + 'о';
 	}
-	if (noun[0] == prep[prep.length-1] && !vowels.includes(noun[1])){
+	if (noun[0] == prep[prep.length-1]){
 		return prep + 'о';
 	}
 	return prep;
@@ -135,7 +135,29 @@ nounExercises = [
 	// prepositional templates
 	[
 	
-		
+		// I'm (talking/thinking) about (noun)
+		class extends NounExercise {
+			constructor(noun, number) {
+				super(noun, 4, number);
+				
+				if (noun.animate || Math.random() > 0.7) {
+					const p = Math.floor(Math.random()*8);
+					const c = + (Math.random() > 0.5);
+					
+					this.englishSentence = englishPronouns[3][p] + [" talking about _.", " thinking about _."][c];
+					this.englishWord = noun.translation.indefinite(number);
+					this.russianSentence = russianPronouns[0][p] + " " + getRussianVerb(["говорить","думать"][c]).present(p) + ((vowels.includes(this.russianWord[0])) ? " об _." : " о _.");
+				}
+				
+				else {
+					const p = Math.floor(Math.random()*8);
+					this.englishSentence = englishPronouns[3][p] + " inside of _.";
+					this.englishWord = "the " + noun.translation.num(number);
+					this.russianSentence = russianPronouns[0][p] + " " + prepForm('в',this.russianWord) + " _."
+				}
+				
+			}
+		}
 	
 	],
 	

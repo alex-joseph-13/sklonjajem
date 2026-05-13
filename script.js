@@ -201,9 +201,6 @@ function makeSettingsNoun() {
 	if (allowIrregulars) irregButton.classList.toggle("pressed");
 	settings.appendChild(irregButton);
 	
-	settings.children[12].disabled = true;
-	settings.children[13].disabled = true;
-	
 }
 
 function makeSettingsVerb() {

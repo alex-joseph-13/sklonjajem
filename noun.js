@@ -449,7 +449,7 @@ class EnglishNoun {
 		if (plural == '-'){
 			this.plural = singular + " (plural)"
 		} else if (!plural) {
-			if (['s','z'].includes(singular[singular.length-1])) {
+			if ('szx'.includes(singular[singular.length-1])) {
 				this.plural = singular + 'es';
 			} else if (['ch','sh'].includes(singular.substr(singular.length-2,2))) {
 				this.plural = singular + 'es';
