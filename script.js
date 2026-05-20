@@ -79,17 +79,6 @@ function nounlist(number) {
 	return ret;
 }
 
-function verbList() {
-	let ret = [];
-	if(allowRegulars) {
-		ret = ret.concat(regularVerbs);
-	}
-	if(allowIrregulars) {
-		ret = ret.concat(irregularVerbs);
-	}
-	return ret;
-}
-
 
 
 
@@ -203,37 +192,28 @@ function makeSettingsNoun() {
 	
 }
 
+function makeVerbButton(NAME, EXERCISE) {
+	let tButton = document.createElement("button");
+	tButton.innerHTML = NAME;
+	tButton.onclick = function(){
+		verbTemplates = verbTemplates.symmetricDifference(new Set([EXERCISE]));
+		this.classList.toggle("pressed");
+	}
+	if(verbTemplates.has(EXERCISE)) tButton.classList.toggle("pressed");
+	settings.appendChild(tButton);
+}
+
 function makeSettingsVerb() {
 	
-	let tButton = document.createElement("button");
-	tButton.innerHTML = "Present";
-	tButton.onclick = function(){
-		verbTemplates = verbTemplates.symmetricDifference(new Set([presentVerbExercise]));
-		this.classList.toggle("pressed");
-	}
-	if(verbTemplates.has(presentVerbExercise)) tButton.classList.toggle("pressed");
-	settings.appendChild(tButton);
-	
+	makeVerbButton("Present", presentVerbExercise);
 	settings.appendChild(document.createElement("br"));
 	
-	tButton = document.createElement("button");
-	tButton.innerHTML = "Future Imperfective";
-	tButton.onclick = function(){
-		verbTemplates = verbTemplates.symmetricDifference(new Set([futureImperfectiveVerbExercise]));
-		this.classList.toggle("pressed");
-	}
-	if(verbTemplates.has(futureImperfectiveVerbExercise)) tButton.classList.toggle("pressed");
-	settings.appendChild(tButton);
+	makeVerbButton("Future Imperfective", futureImperfectiveVerbExercise);
+	makeVerbButton("Future Perfective", futurePerfectiveVerbExercise);
+	settings.appendChild(document.createElement("br"));
 	
-	tButton = document.createElement("button");
-	tButton.innerHTML = "Future Perfective";
-	tButton.onclick = function(){
-		verbTemplates = verbTemplates.symmetricDifference(new Set([futurePerfectiveVerbExercise]));
-		this.classList.toggle("pressed");
-	}
-	if(verbTemplates.has(futurePerfectiveVerbExercise)) tButton.classList.toggle("pressed");
-	settings.appendChild(tButton);
-	
+	makeVerbButton("Past Imperfective", pastImperfectiveVerbExercise);
+	makeVerbButton("Past Perfective", pastPerfectiveVerbExercise);
 	settings.appendChild(document.createElement("br"));
 	
 	const regButton = document.createElement("button");
@@ -412,10 +392,6 @@ function nextExercise() {
 			vPair = verbPairs[c];
 			if(!!vPair.getVerb(isPerfective) && ((allowRegulars && vPair.getVerb(isPerfective).regular) || (allowIrregulars && !vPair.getVerb(isPerfective).regular)) ){
 				break;
-			} else {
-				console.log('allow regulars: ' + allowRegulars);
-				console.log('allow irregulars: ' + allowIrregulars);
-				console.log('verbPair: ' + vPair);
 			}
 		}
 		

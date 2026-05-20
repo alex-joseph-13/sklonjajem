@@ -201,7 +201,7 @@ class PerfectiveVerb {
 			output = output + pastEndings[gender];
 			return stressify(reflexify(output,this.reflexive), stress);
 		}
-		const output = this.toString().slice(0,-2) + 'л' + pastEndings[gender];
+		const output = this.inf.slice(0,-2) + 'л' + pastEndings[gender];
 		return stressify(reflexify(output,this.reflexive), stress);
 	}
 	
@@ -283,7 +283,7 @@ class ImperfectiveVerb extends PerfectiveVerb {
 	
 	future(person){
 		if(person > 5) {person = 2}
-		return futureAux[person] + " " + this.inf;
+		return futureAux[person] + " " + this.dictionaryForm();
 	}
 	
 	//past and command methods are inherited

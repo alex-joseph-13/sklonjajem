@@ -314,7 +314,77 @@ class futureImperfectiveVerbExercise extends VerbExercise {
 		this.russianWord = this.russianLemma.future(person);
 		
 		this.englishSentence = this.englishSentence.slice(0,-1) + ' every day.'
-		this.russianSentence = this.russianSentence.slice(0,-1) + ' ежедне́вно';
+		this.russianSentence = this.russianSentence.slice(0,-1) + ' ежедне́вно.';
+		
+		if(person >= 6) {person = 2};
+		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future imperfective";
+		
+	}
+}
+
+class pastPerfectiveVerbExercise extends VerbExercise {
+	constructor(vPair, person) {
+		super(vPair, person, true);
+		
+		let gender;
+		
+		if(person >= 3 && person < 6) {
+			gender = 3;
+		} else if (person == 2) {
+			gender = 0;
+		} else if (person == 6) {
+			gender = 1;
+		} else if (person == 7) {
+			gender = 2;
+		} else {
+			gender = 1 + (Math.random() < 0.5);
+			this.englishSentence = this.englishSentence.replace(englishPronouns[0][person], englishPronouns[0][person] + [' (⚩)',' (♂)',' (♀)'][gender]);
+		}
+		
+		this.englishWord = this.englishLemma.past();
+		this.russianWord = this.russianLemma.past(gender);
+		
+		this.englishSentence = this.englishSentence.slice(0,-1) + ' yesterday.';
+		this.russianSentence = this.russianSentence.slice(0,-1) + ' вчера́.';
+		
+		if(person >= 6) {person = 2};
+		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future imperfective";
+	}
+}
+
+class pastImperfectiveVerbExercise extends VerbExercise {
+	constructor(vPair, person) {
+		super(vPair, person, false);
+		
+		let gender;
+		
+		if(person >= 3 && person < 6) {
+			gender = 3;
+		} else if (person == 2) {
+			gender = 0;
+		} else if (person == 6) {
+			gender = 1;
+		} else if (person == 7) {
+			gender = 2;
+		} else {
+			gender = 1 + (Math.random() < 0.5);
+			this.englishSentence = this.englishSentence.replace(englishPronouns[0][person], englishPronouns[0][person] + [' (⚩)',' (♂)',' (♀)'][gender]);
+		}
+		
+		this.russianWord = this.russianLemma.past(gender);
+		
+		if (Math.random() < 0.5) {
+			this.englishWord = "used to " + this.englishLemma;
+		} else {
+			if (vPair.properties.noGerund) {
+				console.log(this.englishSentence);
+				this.englishWord = this.englishLemma.past();
+				this.englishSentence = this.englishSentence.slice(0,-1) + " a long time ago.";
+				this.russianSentence = this.russianSentence.slice(0,-1) + " давно́."
+			} else {
+				this.englishWord = ([0,2,6,7].includes(person) ? "was " : "were ") + this.englishLemma.gerund();
+			}
+		}
 		
 		if(person >= 6) {person = 2};
 		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future imperfective";
@@ -323,8 +393,9 @@ class futureImperfectiveVerbExercise extends VerbExercise {
 }
 
 
-
 // this is needed to determine which type of verb to get after the exercise type is chosen
 presentVerbExercise.isPerfective = false;
 futurePerfectiveVerbExercise.isPerfective = true;
 futureImperfectiveVerbExercise.isPerfective = false;
+pastPerfectiveVerbExercise.isPerfective = true;
+pastImperfectiveVerbExercise.isPerfective = false;
