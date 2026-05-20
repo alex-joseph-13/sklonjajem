@@ -242,17 +242,17 @@ class VerbExercise extends Exercise {
 				p = (p-1)/3 + 6;
 			}
 			
-			es = es.replace('(s)',englishPronouns[0][p]);
-			es = es.replace('(o)',englishPronouns[1][p]);
-			es = es.replace('(p)',englishPronouns[2][p]);
-			es = es.replace('(rp)',englishPronouns[2][person]);
+			es = es.replace('(s)',englishPronouns[0][p]); //subject
+			es = es.replace('(o)',englishPronouns[1][p]); //object
+			es = es.replace('(p)',englishPronouns[2][p]); //possessive
+			es = es.replace('(rp)',englishPronouns[2][person]); //reflexive possesive
 			
-			rs = rs.replace('(н)',russianPronouns[0][p]);
-			rs = rs.replace('(а)',russianPronouns[1][p]);
-			rs = rs.replace('(г)',russianPronouns[2][p]);
-			rs = rs.replace('(д)',russianPronouns[3][p]);
-			rs = rs.replace('(п)',russianPronouns[4][p]);
-			rs = rs.replace('(и)',russianPronouns[5][p]);
+			rs = rs.replace('(н)',russianPronouns[0][p]); //номынатыв
+			rs = rs.replace('(а)',russianPronouns[1][p]); //аккюзатыв
+			rs = rs.replace('(г)',russianPronouns[2][p]); //генытыв
+			rs = rs.replace('(д)',russianPronouns[3][p]); //дэйтыв
+			rs = rs.replace('(п)',russianPronouns[4][p]); //препозышонал
+			rs = rs.replace('(и)',russianPronouns[5][p]); //инструмэнтал
 		}
 		
 		this.englishSentence = es;

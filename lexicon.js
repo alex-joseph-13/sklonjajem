@@ -32,13 +32,28 @@ let englishVerbs = [
 	new EnglishVerb('give',{past:'gave',participle:'given'}),
 	new EnglishVerb('call'),
 	new EnglishVerb('want'),
+	new EnglishVerb('hear',{past:"heard"}),
+	new EnglishVerb('live'),
+	new EnglishVerb('walk'),
+	new EnglishVerb('go',{past:'went'}),
+	new EnglishVerb('drive',{past:'drove',participle:'driven'}),
+	new EnglishVerb('wear',{past:'worn',participle:'worn'}),
+	new EnglishVerb('carry'),
+	new EnglishVerb('fly',{past:'flew',participle:'flown'}),
+	new EnglishVerb('sleep',{past:'slept'}),
+	new EnglishVerb('grab'),
+	new EnglishVerb('catch',{past:'caught'}),
+	new EnglishVerb('happen'),
+	new EnglishVerb('become',{past:'became',participle:'become'}),
+	new EnglishVerb('have',{past:'had',singular:'has'}),
+	new EnglishVerb('manage'),
 	
 ]
 
 englishVerbs.sort();
 
 
-let perfectiveVerbs = [
+let russianVerbs = [
 	new PerfectiveVerb("отправить",{stress:2}),
 	new PerfectiveVerb("забыть",{stem:"забуд"}),
 	new PerfectiveVerb("изучить",{stressShift:true}),
@@ -66,12 +81,6 @@ let perfectiveVerbs = [
 	new PerfectiveVerb("позвать",{stem:'позов',verbClass:4,stress:3}),
 	new PerfectiveVerb('съесть',{overrides:['съем','съешь','съест','съедим','съедите','съедят'],stressShift:2,irregCommand:'съешь',irregPast:"съел"}),
 	new PerfectiveVerb('поесть',{overrides:['поем','поешь','поест','поедим','поедите','поедят'],stress:2,stressShift:3,irregCommand:'поешь',irregPast:"поел"}),
-	
-]
-
-
-let imperfectiveVerbs = [
-
 	new ImperfectiveVerb("закрывать"),
 	new ImperfectiveVerb("отправлять"),
 	new ImperfectiveVerb("забывать"),
@@ -98,15 +107,50 @@ let imperfectiveVerbs = [
 	new ImperfectiveVerb('смотреть',{stressShift:true}),
 	new ImperfectiveVerb('слушать',{stress:1}),
 	new ImperfectiveVerb('есть',{overrides:['ем','ешь','ест','едим','едите','едят'],stressShift:2,irregCommand:"ешь",irregPast:'ел'}),
-	//TODO fix missing stress on this verb ^
 	new ImperfectiveVerb('давать',{stem:"да",verbClass:3,irregCommand:'давай'}),
 	new ImperfectiveVerb('звать',{stem:'зов',verbClass:4,stress:2}),
+	new ImperfectiveVerb('слышать',{stem:'слыш',verbClass:2,stress:1}),
+	new PerfectiveVerb('услышать',{stem:'услыш',verbClass:2,stress:2}),
+	new ImperfectiveVerb('жить',{stem:'жив',verbClass:4,stress:2,pastStress:1,pastShift:true}),
+	new PerfectiveVerb('пожить',{stem:'пожив',verbClass:4,stress:3,pastStress:2,pastShift:true}),
+	new ImperfectiveVerb('ходить',{stressShift:true}),
+	new ImperfectiveVerb('идти',{stem:'ид',verbClass:4,irregPast:'шл'}),
+	new PerfectiveVerb('пойти',{stem:'пойд',verbClass:4,irregPast:'пошл'}),
+	new ImperfectiveVerb('ездить',{stress:1}),
+	new ImperfectiveVerb('ехать',{stress:1,stem:'ед',irregCommand:'езжай',commandStress:2}),
+	new ImperfectiveVerb('водить',{stressShift:true}),
+	new ImperfectiveVerb('вести',{stem:'вед',verbClass:4,irregPast:'вёл'}),
+	new PerfectiveVerb('повести',{stem:'повед',verbClass:4,irregPast:'повёл'}),
+	new ImperfectiveVerb('носить',{stressShift:true}),
+	new ImperfectiveVerb('нести',{stem:'нес',verbClass:4,irregPast:'нёс'}),
+	new PerfectiveVerb('понести',{stem:'понес',verbClass:4,irregPast:'понёс'}),
+	new ImperfectiveVerb('летать'),
+	new ImperfectiveVerb('лететь'),
+	new PerfectiveVerb('полететь'),
+	new ImperfectiveVerb('спать',{verbClass:1,pastShift:true}),
+	new PerfectiveVerb('поспать',{verbClass:1,pastShift:true}),
+	new ImperfectiveVerb('хватать'),
+	new PerfectiveVerb('схватить',{stressShift:true}),
+	new ImperfectiveVerb('уметь',{stem:'уме',verbClass:3}),
+	new PerfectiveVerb('суметь',{stem:'суме',verbClass:3}),
+	new PerfectiveVerb('стать',{stem:'стан'}),
+	new ImperfectiveVerb('завтракать',{stress:1}),
+	new PerfectiveVerb('позавтракать',{stress:2}),
+	new ImperfectiveVerb('ужинать',{stress:1}),
+	new PerfectiveVerb('поужинать',{stress:2}),
+	new ImperfectiveVerb('случаться'),
+	new PerfectiveVerb('случиться'),
+	new ImperfectiveVerb('приходиться',{stressShift:true}),
+	new PerfectiveVerb('прийтись',{stem:'прид',verbClass:4,irregPast:'пришл'}),
+	new PerfectiveVerb('родить',{pastShift:true}),
+	new PerfectiveVerb('родиться',{pastShift:true}),
+	new PerfectiveVerb('съездить',{stress:1}),
+	new PerfectiveVerb('поехать',{stress:2,stem:'поед',irregCommand:'поезжай',commandStress:3}),
 ]
 
-const russianVerbs = imperfectiveVerbs.concat(perfectiveVerbs).sort();
+russianVerbs = russianVerbs.sort();
 
-let newVerbs = [
-]
+const newVerbs = russianVerbs;
 
 
 
@@ -156,6 +200,29 @@ let verbPairs = [
 	new VerbPair('есть','съесть','eat',['ку́ча еды́'],['a lot of food']),
 	new VerbPair('давать','дать','give',['(д) э́то','(д) пять до́лларов'],['(o) that','(o) five dollars']),
 	new VerbPair('звать','позвать','call',['его Шура','её Мина','её Соня','её Настя','её Вика','его Тёма','его Женя','его Ваня'],['him Shura','her Mina','her Sonya','her Nastya','her Vika','him Tyoma','him Zhenya','him Vanya'],{noGerund:true}),
+	
+	new VerbPair('слышать','услышать','hear',['звук','шум'],['a sound','a noise'],{noGerund:true}),
+	new VerbPair('жить',null,'live',['в России','в США','в Японии','в Италии','в Индии','в Мэриленде'],['in Russia', 'in the USA', 'in Japan','in Italy','in India','in Maryland'],{noGerund:true}),
+	new VerbPair('ходить','пойти','walk',['в библиоте́ку и наза́д','на у́лице'],['to the library and back','on the street']),
+	new VerbPair('идти','пойти','walk',['в кабине́т','в библиоте́ку'],['to the office','to the library']),
+	new VerbPair('ездить','съездить','go',['в о́тпуск в Италию'],['on vacation to Italy']),
+	new VerbPair('ехать','поехать','go',['в школу'],['to school']),
+	new VerbPair('водить','повести','drive',['маши́ну','в го́роде'],['a car','in the city']),
+	new VerbPair('вести','повести','drive',['в шко́лу','(а) в шко́лу'],['to school','(o) to school']),
+	new VerbPair('носить','понести','wear',['очки́','ку́ртку','кра́сная футбо́лка'],['glasses','a jacket','a red t-shirt']),
+	new VerbPair('нести','понести','carry',['чемода́н','рюкза́к'],['a briefcase','a backpack']),
+	new VerbPair('летать',null,'fly',['по Европе'],['around Europe']),
+	new VerbPair('лететь','полететь','fly',['в Италии','в Калифорнии','домой'],['to Italy','to California','home']),
+	new VerbPair('спать','поспать','sleep'),
+	new VerbPair('хватать','схватить',['grab','catch'],['ма́ленкии лиси́ци','грипп'],['the little foxes','a cold']),
+	new VerbPair('случаться','случиться','happen',['','со (п)'],['','to (o)'],{impersonal:true}),
+	new VerbPair(null,'стать','become',['бананом'],['a banana']),
+	new VerbPair('приходиться','прийтись','have to',['изуча́ть Стати́стика','обе́дать'],['study Statistics','eat lunch']),
+	new VerbPair('уметь',null,'know how',['води́ть','гото́вить лапшу́'],['to drive','to make noodles'],{noGerund:true}),
+	new VerbPair(null,'суметь','manage',['пригото́вить лапшу','поспать'],['to make some noodles','to sleep']),
+	new VerbPair('завтракать','позавтракать','eat breakfast'),
+	new VerbPair('ужинать','поужинать','have dinner'),
+	new VerbPair(null,'родить','give birth',['своего́ пе́рвого ребёнка'],['to (rp) first child']),
 	
 ]
 

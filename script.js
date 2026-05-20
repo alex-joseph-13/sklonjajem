@@ -22,7 +22,7 @@ function switch_pos() {
 	if (partOfSpeech == "noun") {
 		partOfSpeech = "verb";
 		construct_table(8,7);
-		favoriteWords = russianVerbs;
+		favoriteWords = newVerbs;
 	} else {
 		partOfSpeech = "noun";
 		construct_table(8,3);
@@ -406,15 +406,24 @@ function nextExercise() {
 		const template = [...verbTemplates][Math.floor(Math.random()*verbTemplates.size)];
 		const isPerfective = template.isPerfective;
 		
-		const person = Math.floor(Math.random()*8);
-		
 		let vPair;
 		while(true) {
 			let c = Math.floor(Math.random() * verbPairs.length);
 			vPair = verbPairs[c];
 			if(!!vPair.getVerb(isPerfective) && ((allowRegulars && vPair.getVerb(isPerfective).regular) || (allowIrregulars && !vPair.getVerb(isPerfective).regular)) ){
 				break;
+			} else {
+				console.log('allow regulars: ' + allowRegulars);
+				console.log('allow irregulars: ' + allowIrregulars);
+				console.log('verbPair: ' + vPair);
 			}
+		}
+		
+		let person;
+		if (vPair.properties.impersonal) {
+			person = 2 + 3 * +(Math.random() > 0.7);
+		} else {
+			person = Math.floor(Math.random()*8);
 		}
 		
 		currentExercise = new template(vPair, person);
@@ -426,4 +435,4 @@ function nextExercise() {
 
 
 
-//switch_pos();
+switch_pos();

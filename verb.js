@@ -28,7 +28,15 @@ const futureAux = ['буду','будешь','будет','будем','буде
 
 const pastEndings = ['о','','а','и']
 
-
+function reflexify(verb, isReflexive) {
+	if(!isReflexive) return verb;
+	
+	if(vowels.includes(verb[verb.length-1])){
+		return verb + "сь";
+	} else {
+		return verb + "ся";
+	}
+}
 
 
 
@@ -65,12 +73,14 @@ class PerfectiveVerb {
 	irregCommand;
 	irregPast;
 	regular;
+	reflexive;
 	
 	// params:
 	//  stem (if different from default)
 	//  verbClass (if different from default)
 	//  stress (default is last syllable)
 	//  stressShift (if the stress shifts back by one syllable in present conjugations)
+	//  commandStress (if different from default)
 	//  pastStress (if different from default)
 	//  pastShift (if the stress shifts to the ending on femenine past)
 	//  irregCommand (command form, if different from computed)
@@ -80,9 +90,16 @@ class PerfectiveVerb {
 		
 		this.regular = true;
 		
+		if(['ся','сь'].includes(infinitive.substr(infinitive.length-2))){
+			this.reflexive = true;
+			infinitive = infinitive.substr(0,infinitive.length-2);
+		} else {
+			this.reflexive = false;
+		}
+		
 		// verb class 1 ends in -ить, class 0 ends in -ть
 		//  (usually called 2 and 1 respectively)
-		if (!!params.verbClass) {
+		if (params.hasOwnProperty("verbClass")) {
 			this.verbClass = params.verbClass;
 			this.regular = false;
 		} else if (infinitive[infinitive.length-3] == 'у'){
@@ -111,6 +128,7 @@ class PerfectiveVerb {
 		
 		this.stress = params.stress ?? countVowels(infinitive);
 		this.stressShift = (params.stressShift===true) ? this.stress-1 : params.stressShift ?? false;
+		this.commandStress = params.commandStress ?? this.stress;
 		this.pastStress = params.pastStress ?? this.stress;
 		this.pastShift = !!params.pastShift;
 		this.irregCommand = params.irregCommand ?? null;
@@ -131,11 +149,11 @@ class PerfectiveVerb {
 	}
 	
 	toString() {
-		return this.inf;
+		return reflexify(this.inf,this.reflexive);
 	}
 	
 	dictionaryForm() {
-		return stressify(this.inf, this.stress);
+		return stressify(reflexify(this.inf,this.reflexive), this.stress);
 	}
 	
 	//persons: 0=1s, 1=2s, 2=3s, 3=1p, 4=2p, 5=3p
@@ -162,8 +180,12 @@ class PerfectiveVerb {
 		output = output.replace(/[йь]у/,'ю');
 		output = output.replace('ге','же');
 		output = output.replace('ке','ше');
+		output = output.replace(/[дз]ю$/,'жу');
+		output = output.replace(/стю$/,'щу');
+		output = output.replace(/тю$/,'чу');
+		output = output.replace(/сю$/,'шу');
 		
-		return stressify(output, stress);
+		return stressify(reflexify(output,this.reflexive), stress);
 	}
 	
 	//genders: 0=neuter, 1=masc, 2=fem, 3=plural
@@ -173,44 +195,47 @@ class PerfectiveVerb {
 			let output = this.irregPast;
 			if(output[output.length-1] != 'л' && gender!=1){
 				output += 'л';
+			} else if (output.substr(output.length-2) == 'шл' && gender == 1){
+				output = output.substr(0,output.length-1) + "ё" + output[output.length-1];
 			}
 			output = output + pastEndings[gender];
-			return stressify(output, stress);
+			return stressify(reflexify(output,this.reflexive), stress);
 		}
 		const output = this.toString().slice(0,-2) + 'л' + pastEndings[gender];
-		return stressify(output, stress);
+		return stressify(reflexify(output,this.reflexive), stress);
 	}
 	
 	//numbers: 0=singular, 1=plural
 	command(number){
-		if(number == 1){
-			return this.command(0) + 'те';
-		}
+		
+		let output;
 		
 		if(this.irregCommand != null) {
-			return this.irregCommand;
-		}
-		
-		let suffix;
-		if(this.stem[this.stem.length-1] == 'й') {
-			// stem ends in a vowel (verbClass = 0)
-			suffix = "";
-		} else if (vowels.includes(this.stem[this.stem.length-1])) {
-			// stem ends in a vowel (verbClass != 0)
-			suffix = "й";
-		} else if (this.stress > countVowels(this.stem)) {
-			// stress on the ending (I ought to be using the stress of the Я form if it is different from default)
-			suffix = "и";
-		} else if (vowels.includes(this.stem.replace(/ьъ/g,"").slice(-2,-1))) {
-			// stem does not end in two consonants (and does not have stress)
-			suffix = "ь";
+			output = this.irregCommand;
 		} else {
-			// stem ends in two consonants
-			suffix = "и";
-		}
 		
-		const output = this.stem + suffix;
-		return stressify(output, this.stress);
+			let suffix;
+			if(this.stem[this.stem.length-1] == 'й') {
+				// stem ends in a vowel (verbClass = 0)
+				suffix = "";
+			} else if (vowels.includes(this.stem[this.stem.length-1])) {
+				// stem ends in a vowel (verbClass != 0)
+				suffix = "й";
+			} else if (this.stress > countVowels(this.stem)) {
+				// stress on the ending (I ought to be using the stress of the Я form if it is different from default)
+				suffix = "и";
+			} else if (vowels.includes(this.stem.replace(/ьъ/g,"").slice(-2,-1))) {
+				// stem does not end in two consonants (and does not have stress)
+				suffix = "ь";
+			} else {
+				// stem ends in two consonants
+				suffix = "и";
+			}
+			output = this.stem + suffix;
+		
+		}
+		if (number == 1) output = output + 'те';
+		return stressify(reflexify(output,this.reflexive), this.commandStress);
 	}
 	
 	activePastParticiple(){
@@ -472,7 +497,7 @@ function getVerb(lemma) {
 	}
 	
 	const msg = "no such english verb exists: " + lemma;
-	console.log(msg);
+	console.error(msg);
 	return null;
 }
 
@@ -500,8 +525,8 @@ function getRussianVerb(lemma) {
 		
 	}
 	
-	/*const msg = "no such russian verb exists: " + lemma;
-	console.log(msg);*/
+	const msg = "no such russian verb exists: " + lemma;
+	console.error(msg);
 	return null;
 }
 
