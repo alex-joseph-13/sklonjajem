@@ -25,6 +25,7 @@ body > footer {
 	position: fixed;
 	bottom: 0;
 	right:0;
+	padding-bottom: 0;
 }
 
 nav > ul > li {
@@ -49,6 +50,12 @@ nav > ul > li {
 
 #settings_button {
 	margin-bottom: 1rem;
+}
+
+#dev_mode_button {
+	height: 2rem;
+	padding-bottom: 0;
+	padding-top: 0;
 }
 
 .settings-button {

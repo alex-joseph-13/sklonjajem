@@ -278,7 +278,7 @@ class presentVerbExercise extends VerbExercise {
 		
 		this.russianWord = this.russianLemma.present(person);
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " present (imperfective)";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " present (imperfective)";
 	}
 }
 
@@ -301,7 +301,7 @@ class futurePerfectiveVerbExercise extends VerbExercise {
 		this.russianSentence = this.russianSentence.slice(0,-1) + fpSentenceEndingsRu[c];
 		
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future perfective";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future (perfective)";
 		
 	}
 }
@@ -317,7 +317,7 @@ class futureImperfectiveVerbExercise extends VerbExercise {
 		this.russianSentence = this.russianSentence.slice(0,-1) + ' ежедне́вно.';
 		
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future imperfective";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future (imperfective)";
 		
 	}
 }
@@ -348,7 +348,7 @@ class pastPerfectiveVerbExercise extends VerbExercise {
 		this.russianSentence = this.russianSentence.slice(0,-1) + ' вчера́.';
 		
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future imperfective";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " past (perfective)";
 	}
 }
 
@@ -387,7 +387,7 @@ class pastImperfectiveVerbExercise extends VerbExercise {
 		}
 		
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3 +1] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future imperfective";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " past imperfective";
 		
 	}
 }
