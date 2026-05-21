@@ -54,7 +54,7 @@ function construct_table(rows, columns) {
 let currentExercise;
 let testDeclensions = new Set([6]);
 let verbTemplates = new Set([presentVerbExercise,futurePerfectiveVerbExercise]);
-let allowIrregulars = false;
+let allowIrregulars = true;
 let allowRegulars = true;
 let showBothVerbs = false;
 
@@ -156,97 +156,101 @@ function makeSettingsNoun() {
 		
 		for(let n=0; n<2; n++){
 			const caseButton = document.createElement("button");
+			caseButton.classList.toggle('settings-button');
 			caseButton.innerHTML = nounCases[i] + [" singular"," plural"][n];
 			caseButton.declension = n*6 + i;
 			caseButton.onclick = function(){
 				testDeclensions = testDeclensions.symmetricDifference(new Set([this.declension]));
-				this.classList.toggle("pressed");
+				this.classList.toggle("secondary");
 			}
-			if (testDeclensions.has(n*6+i)) {
-				caseButton.classList.toggle("pressed");
+			if (!testDeclensions.has(n*6+i)) {
+				caseButton.classList.toggle("secondary");
 			}
 			settings.appendChild(caseButton);
 		}
-		settings.appendChild(document.createElement("br"));
 	}
 	
 	const regButton = document.createElement("button");
+	regButton.classList.toggle('settings-button');
 	regButton.innerHTML = "Regular Nouns";
 	regButton.style.marginTop = "20px";
 	regButton.onclick = function(){
 		allowRegulars = !allowRegulars;
-		this.classList.toggle("pressed");
+		this.classList.toggle("secondary");
 	}
-	if(allowRegulars) regButton.classList.toggle("pressed");
+	if(!allowRegulars) regButton.classList.toggle("secondary");
 	settings.appendChild(regButton);
 	
 	const irregButton = document.createElement("button");
+	irregButton.classList.toggle('settings-button');
 	irregButton.innerHTML = "Irregular Nouns";
 	irregButton.style.marginTop = "20px";
 	irregButton.onclick = function(){
 		allowIrregulars = !allowIrregulars;
-		this.classList.toggle("pressed");
+		this.classList.toggle("secondary");
 	}
-	if (allowIrregulars) irregButton.classList.toggle("pressed");
+	if (!allowIrregulars) irregButton.classList.toggle("secondary");
 	settings.appendChild(irregButton);
 	
 }
 
 function makeVerbButton(NAME, EXERCISE) {
 	let tButton = document.createElement("button");
+	tButton.classList.toggle('settings-button');
 	tButton.innerHTML = NAME;
 	tButton.onclick = function(){
 		verbTemplates = verbTemplates.symmetricDifference(new Set([EXERCISE]));
-		this.classList.toggle("pressed");
+		this.classList.toggle("secondary");
 	}
-	if(verbTemplates.has(EXERCISE)) tButton.classList.toggle("pressed");
+	if(!verbTemplates.has(EXERCISE)) tButton.classList.toggle("secondary");
 	settings.appendChild(tButton);
 }
 
 function makeSettingsVerb() {
 	
 	makeVerbButton("Present", presentVerbExercise);
-	settings.appendChild(document.createElement("br"));
+	settings.appendChild(document.createElement("div"));
 	
 	makeVerbButton("Future Imperfective", futureImperfectiveVerbExercise);
 	makeVerbButton("Future Perfective", futurePerfectiveVerbExercise);
-	settings.appendChild(document.createElement("br"));
 	
 	makeVerbButton("Past Imperfective", pastImperfectiveVerbExercise);
 	makeVerbButton("Past Perfective", pastPerfectiveVerbExercise);
-	settings.appendChild(document.createElement("br"));
+	
+	const tButton = document.createElement("button");
+	tButton.classList.toggle('settings-button');
+	tButton.style.marginTop = '20px';
+	tButton.style.gridColumnStart = '1';
+	tButton.style.gridColumnEnd = '3';
+	tButton.innerHTML = "Test me on imperfect vs perfective";
+	tButton.onclick = function() {
+		showBothVerbs = !showBothVerbs;
+		this.classList.toggle("secondary");
+	}
+	if (!showBothVerbs) tButton.classList.toggle("secondary");
+	settings.appendChild(tButton);
 	
 	const regButton = document.createElement("button");
+	regButton.classList.toggle('settings-button');
 	regButton.innerHTML = "Regular Verbs";
 	regButton.style.marginTop = "20px";
 	regButton.onclick = function(){
 		allowRegulars = !allowRegulars;
-		this.classList.toggle("pressed");
+		this.classList.toggle("secondary");
 	}
-	if(allowRegulars) regButton.classList.toggle("pressed");
+	if(!allowRegulars) regButton.classList.toggle("secondary");
 	settings.appendChild(regButton);
 	
 	const irregButton = document.createElement("button");
+	irregButton.classList.toggle('settings-button');
 	irregButton.innerHTML = "Irregular Verbs";
 	irregButton.style.marginTop = "20px";
 	irregButton.onclick = function(){
 		allowIrregulars = !allowIrregulars;
-		this.classList.toggle("pressed");
+		this.classList.toggle("secondary");
 	}
-	if (allowIrregulars) irregButton.classList.toggle("pressed");
+	if (!allowIrregulars) irregButton.classList.toggle("secondary");
 	settings.appendChild(irregButton);
-	
-	settings.appendChild(document.createElement("br"));
-	
-	tButton = document.createElement("button");
-	tButton.style.marginTop = '20px'
-	tButton.innerHTML = "Test me on imperfect vs perfective";
-	tButton.onclick = function() {
-		showBothVerbs = !showBothVerbs;
-		this.classList.toggle("pressed");
-	}
-	if (showBothVerbs) tButton.toggle("pressed");
-	settings.appendChild(tButton);
 }
 
 function makeSettings() {
@@ -269,8 +273,8 @@ function click_settings_button() {
 		quiz.hidden = true;
 		settings.hidden = false;
 		settings_button.innerHTML = "Close Settings";
-	} else if ( (partOfSpeech == "noun" && testDeclensions.size>0) ||
-			  (partOfSpeech == "verb" && (allowIrregulars || allowRegulars) && verbTemplates.size>0) ){
+	} else if ( (allowIrregulars || allowRegulars) && ((partOfSpeech == "noun" && testDeclensions.size>0) ||
+			  (partOfSpeech == "verb" && verbTemplates.size>0)) ){
 		quiz.hidden = false;
 		settings.hidden = true;
 		settings_button.innerHTML = "Settings";
@@ -326,6 +330,7 @@ function prepareExercise(exercise) {
 	};
 	helpButton.innerHTML = "?";
 	helpButton.id = "help";
+	helpButton.classList.toggle("outline");
 	$("help").replaceWith(helpButton);
 	
 	$("russian_sentence").innerHTML = sentenceCase(exercise.russianSentence)
@@ -406,9 +411,10 @@ function nextExercise() {
 	}
 	
 	prepareExercise(currentExercise);
+	answer_box.select();
 	
 }
 
 
 
-switch_pos();
+//switch_pos();

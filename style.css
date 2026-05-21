@@ -1,8 +1,4 @@
-p {
-	font-family: "Oswald", "Roboto", Verdana, sans-serif;
-}
-
-input {
+p, input {
 	font-family: "Oswald", "Roboto", Verdana, sans-serif;
 }
 
@@ -19,14 +15,50 @@ tr {
 	height: 20px;
 }
 
-.pressed {
-	background: lime;
+body > header {
+	background: rgb(246, 142, 104);
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+}
+
+body > footer {
+	position: fixed;
+	bottom: 0;
+	right:0;
+}
+
+nav > ul > li {
+	padding-bottom: 0;
+	padding-top: 0;
 }
 
 #settings {
-	z-index: 1;
-	background-color: gray;
+	background-color: rgb(170,165,160);
 	min-height: 160px;
-	width: 350px;
 	max-width: 100%;
+	padding: 0.2rem;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	width: 50rem;
+}
+
+#answer_box {
+	width: 10rem;
+	height: 1rem;
+}
+
+#settings_button {
+	margin-bottom: 1rem;
+}
+
+.settings-button {
+	margin: 0.1rem;
+}
+
+button#help {
+	height: 1.5rem;
+	width: 1.5rem;
+	padding:0;
+	border-radius: 0.75rem;
+	margin-bottom: 1rem;
 }

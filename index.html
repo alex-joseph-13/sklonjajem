@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Склоняем</title></title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.orange.min.css">
     <link rel="stylesheet" href="./style.css">
     <!link rel="icon" href="./favicon.ico" type="image/x-icon">
 	
@@ -14,18 +15,28 @@
 	<script src="script.js" defer></script>
   </head>
   <body>
+  
+	<header>
+		<nav>
+			<ul>
+				<li><h1>Склоняем</h1></li>
+			</ul>
+			<ul>
+				<li>
+					<button id=pos_button onclick="switch_pos()">switch to verbs</button>
+				</li>
+			</ul>
+		</nav>
+	</header>
 	
     <main>
-	
-		<div>
-			<button id=pos_button onclick="switch_pos()">switch to verbs</button>
-		</div>
 		
-		<div id="quiz_tab">
+		
+		<div id="quiz_tab" class = "container">
 		
 			<button id="settings_button" onclick="click_settings_button()">Start Practicing</button>
 			
-			<div id="quiz">
+			<article hidden id="quiz">
 				<p id=english_sentence></p>
 				<p id=russian_lemma></p>
 				<p id=help></p>
@@ -33,7 +44,7 @@
 				
 				<p id="correct" hidden>Correct!</p>
 				<p id="incorrect" hidden>Incorrect!</p>
-			</div>
+			</article>
 			
 			<div id="settings"></div>
 			
@@ -93,10 +104,13 @@
 		
 		
 		
-		<button hidden onclick="quiz_tab.hidden = !quiz_tab.hidden; debug_tab.hidden = !debug_tab.hidden">dev mode</button>
-		
 		
     </main>
+	
+	
+	<footer>
+		<button onclick="quiz_tab.hidden = !quiz_tab.hidden; debug_tab.hidden = !debug_tab.hidden">dev mode</button>
+	</footer>
     
   </body>
   
