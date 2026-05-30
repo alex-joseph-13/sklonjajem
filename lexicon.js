@@ -47,7 +47,10 @@ let englishVerbs = [
 	new EnglishVerb('become',{past:'became',participle:'become'}),
 	new EnglishVerb('have',{past:'had',singular:'has'}),
 	new EnglishVerb('manage'),
-	
+	new EnglishVerb('see',{past:'saw',participle:'seen'}),
+	new EnglishVerb('fear'),
+	new EnglishVerb('whisper'),
+	new EnglishVerb('spy'),
 ]
 
 englishVerbs.sort();
@@ -81,76 +84,86 @@ let russianVerbs = [
 	new PerfectiveVerb("позвать",{stem:'позов',verbClass:4,stress:3}),
 	new PerfectiveVerb('съесть',{overrides:['съем','съешь','съест','съедим','съедите','съедят'],stressShift:2,irregCommand:'съешь',irregPast:"съел"}),
 	new PerfectiveVerb('поесть',{overrides:['поем','поешь','поест','поедим','поедите','поедят'],stress:2,stressShift:3,irregCommand:'поешь',irregPast:"поел"}),
-	new ImperfectiveVerb("закрывать"),
-	new ImperfectiveVerb("отправлять"),
-	new ImperfectiveVerb("забывать"),
-	new ImperfectiveVerb("изучать"),
-	new ImperfectiveVerb("делать", {stress:1}),
-	new ImperfectiveVerb("знать"),
-	new ImperfectiveVerb("читать"),
-	new ImperfectiveVerb("понимать"),
-	new ImperfectiveVerb("работать", {stress:2}),
-	new ImperfectiveVerb("решать"),
-	new ImperfectiveVerb("показывать", {stress:2}),
-	new ImperfectiveVerb("обедать", {stress:2}),
-	new ImperfectiveVerb("кашлять", {stress:1}),
-	new ImperfectiveVerb("помогать"),
-	new ImperfectiveVerb("говорить"),
-	new ImperfectiveVerb("готовить", {stress:2}),
-	new ImperfectiveVerb("создавать",{stem:"созда",verbClass:3,irregCommand:'создавай'}),
-	new ImperfectiveVerb('считать'),
-	new ImperfectiveVerb('писать',{stress:1}),
-	new ImperfectiveVerb('хотеть',{overrides:['хочу','хо́чешь','хо́чет'],stem:"хот"}),
-	new ImperfectiveVerb('стоить',{stress:1}),
-	new ImperfectiveVerb('любить',{stressShift:true}),
-	new ImperfectiveVerb('думать',{stress:1}),
-	new ImperfectiveVerb('смотреть',{stressShift:true}),
-	new ImperfectiveVerb('слушать',{stress:1}),
-	new ImperfectiveVerb('есть',{overrides:['ем','ешь','ест','едим','едите','едят'],stressShift:2,irregCommand:"ешь",irregPast:'ел'}),
-	new ImperfectiveVerb('давать',{stem:"да",verbClass:3,irregCommand:'давай'}),
-	new ImperfectiveVerb('звать',{stem:'зов',verbClass:4,stress:2}),
-	new ImperfectiveVerb('слышать',{stem:'слыш',verbClass:2,stress:1}),
+	new ImperfectVerb("закрывать"),
+	new ImperfectVerb("отправлять"),
+	new ImperfectVerb("забывать"),
+	new ImperfectVerb("изучать"),
+	new ImperfectVerb("делать", {stress:1}),
+	new ImperfectVerb("знать"),
+	new ImperfectVerb("читать"),
+	new ImperfectVerb("понимать"),
+	new ImperfectVerb("работать", {stress:2}),
+	new ImperfectVerb("решать"),
+	new ImperfectVerb("показывать", {stress:2}),
+	new ImperfectVerb("обедать", {stress:2}),
+	new ImperfectVerb("кашлять", {stress:1}),
+	new ImperfectVerb("помогать"),
+	new ImperfectVerb("говорить"),
+	new ImperfectVerb("готовить", {stress:2}),
+	new ImperfectVerb("создавать",{stem:"созда",verbClass:3,irregCommand:'создавай'}),
+	new ImperfectVerb('считать'),
+	new ImperfectVerb('писать',{stress:1}),
+	new ImperfectVerb('хотеть',{overrides:['хочу','хо́чешь','хо́чет'],stem:"хот"}),
+	new ImperfectVerb('стоить',{stress:1}),
+	new ImperfectVerb('любить',{stressShift:true}),
+	new ImperfectVerb('думать',{stress:1}),
+	new ImperfectVerb('смотреть',{stressShift:true}),
+	new ImperfectVerb('слушать',{stress:1}),
+	new ImperfectVerb('есть',{overrides:['ем','ешь','ест','едим','едите','едят'],stressShift:2,irregCommand:"ешь",irregPast:'ел'}),
+	new ImperfectVerb('давать',{stem:"да",verbClass:3,irregCommand:'давай'}),
+	new ImperfectVerb('звать',{stem:'зов',verbClass:4,stress:2}),
+	new ImperfectVerb('слышать',{stem:'слыш',verbClass:2,stress:1}),
 	new PerfectiveVerb('услышать',{stem:'услыш',verbClass:2,stress:2}),
-	new ImperfectiveVerb('жить',{stem:'жив',verbClass:4,stress:2,pastStress:1,pastShift:true}),
+	new ImperfectVerb('жить',{stem:'жив',verbClass:4,stress:2,pastStress:1,pastShift:true}),
 	new PerfectiveVerb('пожить',{stem:'пожив',verbClass:4,stress:3,pastStress:2,pastShift:true}),
-	new ImperfectiveVerb('ходить',{stressShift:true}),
-	new ImperfectiveVerb('идти',{stem:'ид',verbClass:4,irregPast:'шл'}),
+	new ImperfectVerb('ходить',{stressShift:true}),
+	new ImperfectVerb('идти',{stem:'ид',verbClass:4,irregPast:'шл'}),
 	new PerfectiveVerb('пойти',{stem:'пойд',verbClass:4,irregPast:'пошл'}),
-	new ImperfectiveVerb('ездить',{stress:1}),
-	new ImperfectiveVerb('ехать',{stress:1,stem:'ед',irregCommand:'езжай',commandStress:2}),
-	new ImperfectiveVerb('водить',{stressShift:true}),
-	new ImperfectiveVerb('вести',{stem:'вед',verbClass:4,irregPast:'вёл'}),
+	new ImperfectVerb('ездить',{stress:1}),
+	new ImperfectVerb('ехать',{stress:1,stem:'ед',irregCommand:'езжай',commandStress:2}),
+	new ImperfectVerb('водить',{stressShift:true}),
+	new ImperfectVerb('вести',{stem:'вед',verbClass:4,irregPast:'вёл'}),
 	new PerfectiveVerb('повести',{stem:'повед',verbClass:4,irregPast:'повёл'}),
-	new ImperfectiveVerb('носить',{stressShift:true}),
-	new ImperfectiveVerb('нести',{stem:'нес',verbClass:4,irregPast:'нёс'}),
+	new ImperfectVerb('носить',{stressShift:true}),
+	new ImperfectVerb('нести',{stem:'нес',verbClass:4,irregPast:'нёс'}),
 	new PerfectiveVerb('понести',{stem:'понес',verbClass:4,irregPast:'понёс'}),
-	new ImperfectiveVerb('летать'),
-	new ImperfectiveVerb('лететь'),
+	new ImperfectVerb('летать'),
+	new ImperfectVerb('лететь'),
 	new PerfectiveVerb('полететь'),
-	new ImperfectiveVerb('спать',{verbClass:1,pastShift:true}),
+	new ImperfectVerb('спать',{verbClass:1,pastShift:true}),
 	new PerfectiveVerb('поспать',{verbClass:1,pastShift:true}),
-	new ImperfectiveVerb('хватать'),
+	new ImperfectVerb('хватать'),
 	new PerfectiveVerb('схватить',{stressShift:true}),
-	new ImperfectiveVerb('уметь',{stem:'уме',verbClass:3}),
+	new ImperfectVerb('уметь',{stem:'уме',verbClass:3}),
 	new PerfectiveVerb('суметь',{stem:'суме',verbClass:3}),
 	new PerfectiveVerb('стать',{stem:'стан'}),
-	new ImperfectiveVerb('завтракать',{stress:1}),
+	new ImperfectVerb('завтракать',{stress:1}),
 	new PerfectiveVerb('позавтракать',{stress:2}),
-	new ImperfectiveVerb('ужинать',{stress:1}),
+	new ImperfectVerb('ужинать',{stress:1}),
 	new PerfectiveVerb('поужинать',{stress:2}),
-	new ImperfectiveVerb('случаться'),
+	new ImperfectVerb('случаться'),
 	new PerfectiveVerb('случиться'),
-	new ImperfectiveVerb('приходиться',{stressShift:true}),
+	new ImperfectVerb('приходиться',{stressShift:true}),
 	new PerfectiveVerb('прийтись',{stem:'прид',verbClass:4,irregPast:'пришл'}),
 	new PerfectiveVerb('родить',{pastShift:true}),
 	new PerfectiveVerb('родиться',{pastShift:true}),
 	new PerfectiveVerb('съездить',{stress:1}),
 	new PerfectiveVerb('поехать',{stress:2,stem:'поед',irregCommand:'поезжай',commandStress:3}),
+	new ImperfectVerb('видеть',{stress:1}),
+	new PerfectiveVerb('увидеть',{stress:2}),
+	new ImperfectVerb('находить',{stressShift:true}),
+	new PerfectiveVerb('найти',{stem:'найд',verbClass:4,irregPast:'нашл'}),
+	new ImperfectVerb('бояться',{stem:'бо',verbClass:1,commandStress:1}),
+	new PerfectiveVerb('побояться',{stem:'побо',verbClass:1,commandStress:2}),
+	new ImperfectVerb('шептать',{stem:'шепч',stressShift:true}),
+	new PerfectiveVerb('прошептать',{stem:'прошепч',stressShift:true}),
 ]
 
 russianVerbs = russianVerbs.sort();
 
-const newVerbs = russianVerbs;
+const newVerbs = [
+	...russianVerbs
+]
 
 
 
@@ -223,6 +236,10 @@ let verbPairs = [
 	new VerbPair('завтракать','позавтракать','eat breakfast'),
 	new VerbPair('ужинать','поужинать','have dinner'),
 	new VerbPair(null,'родить','give birth',['своего́ пе́рвого ребёнка'],['to (rp) first child']),
+	new VerbPair('видеть','увидеть',['see','spy'],['кого́-то',', со свои́м глазко́м, что-то красно'],['someone',' with (rp) little eye, something red'],{noGerund:true}),
+	new VerbPair('находить','найти','find',['волос во своей еде́','хорошую кни́гу','бродя́чий кот'],['a hair in (rp) food','a good book','a stray cat']),
+	new VerbPair('бояться','побояться','fear',['орлов','смреть','тьму','(а)'],['eagles','death','the dark','(o)'],{noGerund:true}),
+	new VerbPair('шептать','прошептать','whisper',['','(д)'],['','to (o)']),
 	
 ]
 
@@ -262,7 +279,7 @@ let verbPairs = [
 
 
 let regularNouns = [
-
+	
 	new Noun('урок','assignment'),
 	new Noun('язык','language',{stress:-1}),
 	new Noun('класс','class'),
@@ -283,16 +300,16 @@ let regularNouns = [
 	new Noun('писательница','author (♀)',{stress:2,animate:true}),
 	new Noun('врачиха','doctor (♀)',{stress:2,animate:true}),
 	new Noun('подруга','friend (♀)',{stress:2,animate:true}),
-	new Noun('девушка','girl',{animate:true,stress:1,genPl:"девушек"}),
-	new Noun('идиотка','idiot (♀)',{animate:true,stress:3,genPl:"идиоток"}),
-	new Noun('эсэмэска','text message',{stress:3,genPl:'эсэмэсок'}),
+	new Noun('девушка','girl',{animate:true,stress:1}),
+	new Noun('идиотка','idiot (♀)',{animate:true,stress:3}),
+	new Noun('эсэмэска','text message',{stress:3}),
 	new Noun('лисица','fox',{animate:true,stress:2}),
 	new Noun('поле','field',{stress:1,pluralStress:2}),
 	new Noun('библиотека','library',{stress:4}),
 	new Noun('кабинет','office'),
 	new Noun('ряд',['series','-'],{pluralStress:2}),
 	new Noun('женщина',['woman','women'],{stress:1,animate:true}),
-	new Noun('мужчина',['man','men'],{stress:2,animate:true}),
+	new Noun('мужчина',['man','men'],{stress:2,animate:true,fakeFemenine:true}),
 	new Noun('спина','back',{pluralStress:1,stressChanges:{1:1}}),
 	new Noun('живот','stomach',{stress:3}),
 	new Noun('кузен','cousin (♂)',{animate:true}),
@@ -307,6 +324,11 @@ let regularNouns = [
 	new Noun('семья','family',{pluralStress:1,stressChanges:{8:2}}),
 	new Noun('племянник','nephew',{stress:2,animate:true}),
 	new Noun('племянница','niece',{stress:2,animate:true}),
+	new Noun('дядя','uncle',{stress:1,animate:true,fakeFemenine:true}),
+	new Noun("игра",'game',{pluralStress:1}),
+	new Noun('час','hour',{pluralStress:2}),
+	new Noun('утро','morning',{stress:1}),
+	new Noun('ночь','night',{declension:3,pluralStress:2,stressChanges:{6:1}}),
 ]
 
 
@@ -315,7 +337,7 @@ let singularNouns = [
 	new Noun('математика',['math'],{stress:3}),
 	new Noun('физика',['physics'],{stress:1}),
 	new Noun('образование','education',{stress:4}),
-	new Noun('чай',['tea'],{pluralStress:-1}),
+	new Noun('чай',['tea'],{pluralStress:-1,genPl:"чаёв"}),
 	new Noun('работа',['work'],{stress:2}),
 	new Noun('завтрак',['breakfast'],{stress:1}),
 	new Noun('обед',['lunch']),
@@ -328,32 +350,116 @@ let singularNouns = [
 ]
 
 let pluralNouns = [
-	new DefectivePluralNoun('деньга',['money'],{genPl:"денег",stress:1,stressChanges:{9:-1,10:-1}}),
+	new DefectivePluralNoun('деньга',['money'],{stress:1,stressChanges:{9:-1,10:-1}}),
 	
 ]
 
 
 
 let irregularNouns = [
-	new Noun('парнь','guy',{stress:1,animate:true,paradigmChanges:["парень"],stressChanges:{8:2,9:2,10:2}}),
-	new Noun('друг','friend (♂)',{animate:true,pluralStem:"друзьй",pluralDeclension:0,pluralStress:-1,genPl:"друзей"}),
+	new Noun('парнь','guy',{stress:1,animate:true,stressChanges:{8:2,9:2,10:2}}),
+	new Noun('друг','friend (♂)',{animate:true,pluralStem:"друзьй",pluralDeclension:0,pluralStress:-1}),
 	new Noun('глаз','eye',{pluralDeclension:0,pluralStress:-1}),
-	new Noun('днь','day',{paradigmChanges:['день']}),
+	new Noun('днь','day'),
 	new Noun('дом','house',{paradigmChanges:{6:'дома'},pluralStress:-1}),
-	new Noun('отц','father',{animate:true,paradigmChanges:['отец']}),
-	new Noun('орл','eagle',{animate:true,paradigmChanges:['орёл']}),
+	new Noun('отц','father',{animate:true,stress:2}),
+	new Noun('орл','eagle',{animate:true,stress:2}),
 	new Noun('дерево','tree',{stress:1,pluralStem:'деревьй',genPl:'деревьев',pluralStress:2}),
 	new Noun('цвет','color',{paradigmChanges:{6:'цвета'},pluralStress:2}),
 	new Noun('брат','brother',{animate:true,pluralStem:'братьй',paradigmChanges:{6:'братья',8:'братьев'}}),
-	new Noun('сёстра','sister',{animate:true,pluralStress:1,genPl:'сестёр',stressChanges:{8:2}}),
-	new Noun('дядя','uncle',{stress:1,animate:true,genPl:'дядей'}),
-	new Noun('сын','son',{animate:true,pluralStem:'сыновьй',pluralDeclension:0,pluralStress:3,genPl:'сыновей'}),
-	new Noun('ребёнк',['child','children'],{stress:2,paradigmChanges:{0:'ребёнок',11:'детьми'},pluralStem:'деть',pluralStress:1,stressChanges:{8:2,11:2},animate:true}),
+	new Noun('сёстра','sister',{animate:true,pluralStress:1,stressChanges:{8:2}}),
+	new Noun('сын','son',{animate:true,pluralStem:'сыновьй',pluralDeclension:0,pluralStress:3}),
+	new Noun('ребёнк',['child','children'],{stress:2,paradigmChanges:{11:'детьми'},pluralStem:'деть',pluralStress:1,stressChanges:{8:2,11:2},animate:true}),
 	new Noun('человек',['person','people'],{animate:true,pluralStem:'людь',pluralStress:1,paradigmChanges:{11:'людьми'},stressChanges:{8:2,11:2}}),
+	new Noun('вечер','evening',{stress:1,pluralStress:3,paradigmChanges:{6:'вечера'}}),
+	new Noun('время','time',{stress:1,declension:4,pluralStress:3}),
+	new Noun('яйцо','egg',{pluralStress:1,stressChanges:{8:2},genPl:'яиц'}),
 ]
 
 let newNouns = [
+	...irregularNouns
 ]
 
 
 let nouns = regularNouns.concat(irregularNouns);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let adjectives = [
+	new Adjective('новый','new'),
+	new Adjective('старый','old'),
+	new Adjective('большой','big',{noComparative:true,irregShortForm:"велик",shortFormStress:3}),
+	new Adjective('маленький','small',{stress:1,irregShortForm:"мал",shortFormStress:2,noComparative:true}),
+	new Adjective('хороший','good',{shortFormStress:3,irregComparative:"лучше",irregSuperlative:"лучший"}),
+	new Adjective('плохой','bad',{irregComparative:"хуже",irregSuperlative:"худший"}),
+	new Adjective('первый','first',{noShortForm:true,noComparative:true}),
+	new Adjective('второй','second',{noShortForm:true,noComparative:true}),
+	new Adjective('последний','last',{noShortForm:true,noComparative:true}),
+	new Adjective('похожий','similar',{noComparative:true}),
+	new Adjective('простой','easy'),
+	new Adjective('настоящий','true',{noShortForm:true,noComparative:true}),
+	new Adjective('длинный','long'),
+	new Adjective('страшный','scary'),
+	new Adjective('готовый','finished',{noComparative:true}),
+	new Adjective('высокий','tall',{shortFormStress:3,irregComparative:'выше',irregSuperlative:'высший'}),
+	new Adjective('скорый','quick'),
+	new Adjective('яркий','bright'),
+	new Adjective('прямой','straight'),
+	new Adjective('красный','red'),
+	new Adjective('оранжевый','orange',{stress:2,noComparative:true}),
+	new Adjective('жёлтый','yellow'),
+	new Adjective('зелёный','green',{shortFormStress:[1,1,3,1]}),
+	new Adjective('голубой','cyan',{noShortForm:true}),
+	new Adjective('синий','blue'),
+	new Adjective('фиолетовый','purple',{stress:3,noShortForm:true,noComparative:true}),
+	new Adjective('чёрный','black',{shortFormStress:[2,1,2,2]}),
+	new Adjective('белый','white'),
+	new Adjective('коричневый','brown',{stress:2,shortFormStress:2,noComparative:true}),
+	new Adjective('серый','gray',{noComparative:true}),
+	new Adjective('розовый','pink',{stress:1,shortFormStress:1}),
+	new Adjective('светлый','light',{shortFormStress:[2,1,2,2],noComparative:true}),
+	new Adjective('тёмный','dark',{shortFormStress:[2,1,2,2]}),
+	new Adjective('нужный','necessary',{noComparative:true,shortFormStress:[1,1,2,2]}),
+	new Adjective('русский','Russian',{noShortForm:true,noComparative:true}),
+	new Adjective('американский','American',{noShortForm:true,noComparative:true}),
+	new Adjective('английский','English',{noShortForm:true,noComparative:true}),
+
+]
+
+let newAdjectives = [...adjectives
+]

@@ -14,20 +14,32 @@ function sentenceCase(string) {
 
 
 
-partOfSpeech = "noun";
+partOfSpeech = "";
 let favoriteWords = irregularNouns.reverse();
 
-function switch_pos() {
-	$("pos_button").innerHTML = "switch to " + partOfSpeech + "s";
-	if (partOfSpeech == "noun") {
-		partOfSpeech = "verb";
+posNumbers = {"noun":0,"verb":1,"adjective":2,"":0}
+
+function switch_pos(newPos) {
+	if(newPos == partOfSpeech) return;
+	
+	pos_buttons.children[posNumbers[partOfSpeech]].classList.add("secondary");
+	partOfSpeech = newPos;
+	pos_buttons.children[posNumbers[partOfSpeech]].classList.remove("secondary");
+	
+	if (newPos == "verb") {
 		construct_table(8,7);
 		favoriteWords = newVerbs;
-	} else {
-		partOfSpeech = "noun";
+		posNumber = 0;
+	} else if (newPos == "noun") {
 		construct_table(8,3);
-		favoriteWords = singularNouns;
+		favoriteWords = newNouns;
+		posNumber = 1;
+	} else {
+		construct_table(9,5);
+		favoriteWords = newAdjectives;
+		posNumber = 2;
 	}
+	exampleNumber = 0;
 	updateTable();
 	makeSettings();
 	
@@ -52,15 +64,15 @@ function construct_table(rows, columns) {
 
 
 let currentExercise;
-let testDeclensions = new Set([6]);
+let testDeclensions = new Set([0,1,2,3,4,5,6,7,8,9,10,11]);
 let verbTemplates = new Set([presentVerbExercise,futurePerfectiveVerbExercise]);
 let allowIrregulars = true;
 let allowRegulars = true;
 let showBothVerbs = false;
 
-function nounlist(number) {
+function nounlist(number,reg,irreg) {
 	let ret = [];
-	if(allowRegulars) {
+	if(reg) {
 		switch(number){
 			case 0:
 				ret = regularNouns.concat(singularNouns);
@@ -73,7 +85,7 @@ function nounlist(number) {
 				break;
 		}
 	}
-	if (allowIrregulars) {
+	if (irreg) {
 		ret = ret.concat(irregularNouns);
 	}
 	return ret;
@@ -103,6 +115,8 @@ function updateTable(){
 		updateNounTable();
 	} else if (partOfSpeech == "verb"){
 		updateVerbTable();
+	} else if (partOfSpeech == "adjective"){
+		updateAdjectiveTable();
 	}
 }
 
@@ -135,7 +149,25 @@ function updateVerbTable(){
 	}
 }
 
-updateTable();
+function updateAdjectiveTable(){
+	const adjective = favoriteWords[exampleNumber];
+	let tableItems = adjective.allDeclensions();
+	
+	for(i in tableItems){
+		const row  = tableItems[i];
+		tableItems[i] = [row[0],row[2],row[3],row[1],row[4]];
+	}
+	tableItems = [tableItems[0],tableItems[1],tableItems[3],tableItems[4],tableItems[2],tableItems[6],tableItems[5],tableItems[7],tableItems[8]];
+	
+	for(let i in tableItems){
+		for(let j in tableItems[i]){
+			document.getElementById("tbody").children[i].children[j].innerHTML = tableItems[i][j];
+		}
+	}
+	
+	
+}
+
 
 
 
@@ -211,10 +243,10 @@ function makeSettingsVerb() {
 	makeVerbButton("Present", presentVerbExercise);
 	settings.appendChild(document.createElement("div"));
 	
-	makeVerbButton("Future Imperfective", futureImperfectiveVerbExercise);
+	makeVerbButton("Future Imperfect", futureImperfectVerbExercise);
 	makeVerbButton("Future Perfective", futurePerfectiveVerbExercise);
 	
-	makeVerbButton("Past Imperfective", pastImperfectiveVerbExercise);
+	makeVerbButton("Past Imperfect", pastImperfectVerbExercise);
 	makeVerbButton("Past Perfective", pastPerfectiveVerbExercise);
 	
 	const tButton = document.createElement("button");
@@ -253,16 +285,41 @@ function makeSettingsVerb() {
 	settings.appendChild(irregButton);
 }
 
+function makeSettingsAdjective() {
+	const regButton = document.createElement("button");
+	regButton.classList.toggle('settings-button');
+	regButton.innerHTML = "No options for now!";
+	regButton.style.marginTop = "20px";
+	/*regButton.onclick = function(){
+		allowRegulars = !allowRegulars;
+		this.classList.toggle("secondary");
+	}
+	if(!allowRegulars) regButton.classList.toggle("secondary");*/
+	settings.appendChild(regButton);
+	
+	/*const irregButton = document.createElement("button");
+	irregButton.classList.toggle('settings-button');
+	irregButton.innerHTML = "Irregular Adjectives";
+	irregButton.style.marginTop = "20px";
+	irregButton.onclick = function(){
+		allowIrregulars = !allowIrregulars;
+		this.classList.toggle("secondary");
+	}
+	if (!allowIrregulars) irregButton.classList.toggle("secondary");
+	settings.appendChild(irregButton);*/
+}
+
 function makeSettings() {
 	settings.innerHTML = "";
 	if(partOfSpeech == "noun"){
 		makeSettingsNoun();
 	} else if (partOfSpeech == "verb"){
 		makeSettingsVerb();
+	} else if (partOfSpeech == "adjective"){
+		makeSettingsAdjective();
 	}
 }
 
-makeSettings();
 
 
 
@@ -274,7 +331,7 @@ function click_settings_button() {
 		settings.hidden = false;
 		settings_button.innerHTML = "Close Settings";
 	} else if ( (allowIrregulars || allowRegulars) && ((partOfSpeech == "noun" && testDeclensions.size>0) ||
-			  (partOfSpeech == "verb" && verbTemplates.size>0)) ){
+			  (partOfSpeech == "verb" && verbTemplates.size>0) || partOfSpeech == "adjective") ){
 		quiz.hidden = false;
 		settings.hidden = true;
 		settings_button.innerHTML = "Settings";
@@ -377,7 +434,7 @@ function nextExercise() {
 		const exDeclension = [...testDeclensions][Math.floor(Math.random()*testDeclensions.size)];
 		const number = Math.floor(exDeclension / 6);
 		
-		const exWordlist = nounlist(number);
+		const exWordlist = nounlist(number,allowRegulars,allowIrregulars);
 		
 		const templateList = nounExercises[exDeclension % 6];
 		const template = templateList[Math.floor(Math.random() * templateList.length)];
@@ -408,6 +465,12 @@ function nextExercise() {
 		}
 		
 		currentExercise = new template(vPair, person);
+	} else if (partOfSpeech == "adjective") {
+		const number = +(Math.random() > 0.75);
+		const nounCase = Math.floor(Math.random() *6);
+		const noun = (L = nounlist(number,true,true))[Math.floor(Math.random()*L.length)];
+		const c = Math.floor(Math.random() * adjectives.length);
+		currentExercise = new AdjectiveExercise(adjectives[c],noun,nounCase,number);
 	}
 	
 	prepareExercise(currentExercise);
@@ -416,5 +479,5 @@ function nextExercise() {
 }
 
 
-
-//switch_pos();
+switch_pos("verb");
+//dev_mode_button.onclick();

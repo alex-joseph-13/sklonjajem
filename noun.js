@@ -5,7 +5,7 @@ const consonants = 'шщртйпсдфгхжклзцчвбнм'
 const englishVowels = 'aeiou'
 const englishDoublingConsonants = 'bdgklmnprtvz'
 
-
+const allowedFinalClusters = ['ст','сс','лт','гр','тр'];
 
 const nounCases = ["nominative","accusative","genitive","dative","prepositional","instrumental"];
 
@@ -65,13 +65,58 @@ function stressify(word, stress) {
 	for (let i=0; i<n; i++) {
 		if (word[i] == 'ё' && i!=accentIndex-1) {
 			word = word.substr(0,i) + 'е' + word.substr(i+1);
+		} else if (word[i] == 'о' && 'шщчцж'.includes(word[i-1]) && i!=accentIndex-1){
+			word = word.substr(0,i) + 'е' + word.substr(i+1);
 		}
 	}
+	
 	
 	if(word[accentIndex-1] == 'ё'){
 		return word;
 	}
 	return word = word.substr(0,accentIndex) + '\u0301' + word.substr(accentIndex);
+}
+
+function phonotactics(word){
+	word = word.replace(/[йь]а/,'я');
+	word = word.replace(/[йь]е/,'е');
+	word = word.replace(/[йь]о/,'ё');
+	word = word.replace(/[йь]у/,'ю');
+	word = word.replace(/[йь]ы/,'и');
+	
+	word = word.replace('гы','ги');
+	word = word.replace('кы','ки');
+	word = word.replace('хы','хи');
+	word = word.replace('шы','ши');
+	word = word.replace('шя','ша');
+	word = word.replace('шю','шу');
+	word = word.replace('щы','щи');
+	word = word.replace('жы','жи');
+	word = word.replace('чы','чи');
+	word = word.replace('чя','ча');
+	word = word.replace('чю','чу');
+	
+	
+	
+	return word;
+}
+
+function epenthesize(word){
+	// this is for when a word ends in two consonants
+	if(vowels.includes(word[word.length-1]) || vowels.includes(word[word.length-2])) return word;
+	// ст is an allowed cluster
+	if(allowedFinalClusters.includes(word.substr(-2))) return word;
+	
+	if(word[word.length-1] == 'ь'){
+		if(vowels.includes(word[word.length-3])) return word;
+		return ( r = epenthesize(word.slice(0,-1)) ).slice(0,-2) + 'е' + r.slice(-1) + 'ь';
+	} 
+	if('цй'.includes(word[word.length-1])){
+		return word.slice(0,-1) + "е" + word.slice(-1);
+	} if ('кгх'.includes(word[word.length-1]) || 'кгх'.includes(word[word.length-2])){
+		return word.slice(0,-1) + 'о' + word.slice(-1);
+	}
+	return word.slice(0,-1) + 'ё' + word.slice(-1);
 }
 
 
@@ -108,7 +153,7 @@ function stressify(word, stress) {
 
 class Noun {
 	base; // the base form is the nominative singular
-	declension; // declensions: -1=indeclinable, 0=neuter, 1=masc, 2=fem а/я, 3=fem ь
+	declension; // declensions: -1=indeclinable, 0=neut о/е, 1=masc, 2=fem а/я, 3=fem ь, 4=neut мя
 	stem;
 	stress;
 	pluralDeclension;
@@ -117,6 +162,7 @@ class Noun {
 	paradigmChanges;
 	stressChanges;
 	translation;
+	animate;
 	
 	//params:
 		//animate: true or false (false by default)
@@ -127,6 +173,7 @@ class Noun {
 		//pluralDeclension (default is same as singular)
 		//pluralStress (default is same as singular)
 		//genPl: specifically the form for the genitive plural, if this is the only thing that is different
+		//fakeFemenine: for words like дядя that are morphologically femenine but grammatically masculine
 	
 	constructor(base, translation, params={}) {
 		this.base = base;
@@ -161,10 +208,12 @@ class Noun {
 			this.declension = params.declension;
 		}
 		
-		if (['а','о'].includes(base[base.length-1])){
-			this.stem = base.substr(0, base.length-1);
+		if (this.declension == 4) {
+			this.stem = base.slice(0,-1) + 'ен';
+		} else if (['а','о'].includes(base[base.length-1])){
+			this.stem = base.slice(0,-1);
 		} else if (['я','е'].includes(base[base.length-1])){
-			this.stem = base.substr(0, base.length-1) + 'й';
+			this.stem = base.slice(0,-1) + 'й';
 		} else {
 			this.stem = base;
 		}
@@ -181,11 +230,19 @@ class Noun {
 		this.pluralStress = params.pluralStress ?? this.stress;
 		this.stressChanges = params.stressChanges ?? {};
 		
+		this.fakeFemenine = params.fakeFemenine;
 		
 	}
 	
 	toString(){
 		return this.dictionaryForm();
+	}
+	
+	gender(){
+		if (this.fakeFemenine) return 1;
+		if (this.declension == 3) return 2;
+		if (this.declension == -1 || this.declension == 4) return 0;
+		return this.declension;
 	}
 	
 	// cases: 0=nominative, 1=accusative, 2=genitive, 3=dative, 4=prepositional, 5=instrumental
@@ -221,11 +278,13 @@ class Noun {
 			case 0:
 				// nom sing
 				output = this.base;
+				if (declension == 1) output = epenthesize(output);
 				break;
 			case 1:
 				
 				// acc sing
-				if (declension == 1 && this.animate) {
+				if (declension%2==1 && this.animate) {
+					// this applies to declension 1 (masc) and 3 (fem -ь)
 					return this.decline(2,0);
 				} else if (declension == 2){
 					output = stem + 'у'
@@ -236,25 +295,25 @@ class Noun {
 			case 2:
 				// gen sing
 				if (declension <= 1){
-					output = stem + 'а'
+					output = stem + 'а';
+				} else if (declension == 4) {
+					output = stem + 'и';
 				} else {
-					output = stem + 'ы'
+					output = stem + 'ы';
 				}
 				break;
 			case 3:
 				// dat sing
 				if (declension <= 1){
 					output = stem + 'у'
-				} else if (declension == 2){
-					return this.decline(4,0)
 				} else {
-					output = stem + 'ы'
+					return this.decline(4,0);
 				}
 				break;
 			case 4:
 				// prep sing
-				if (declension == 3){
-					output = stem + 'ы'
+				if (declension >= 3){
+					return this.decline(2,0);
 				} else if (this.base.substr(this.base.length-2) == 'ий') {
 					output = stem + 'ы'
 				} else {
@@ -268,15 +327,18 @@ class Noun {
 				} else if (declension == 1){
 					output = stem + ( ('жцчшщ'.includes(stem[stem.length-1])&&stress<=countVowels(stem)) ? 'ём' : 'ом');
 				} else if (declension == 2) {
-					output = stem + ( ('жцчшщ'.includes(stem[stem.length-1])&&stress<=countVowels(stem)) ? 'eй' : 'ой');
-				} else {
+					output = stem + ( ('жцчшщ'.includes(stem[stem.length-1])&&stress<=countVowels(stem)) ? 'ей' : 'ой');
+				} else if (declension == 3) {
 					output = stem + 'ю';
+				} else {
+					output = stem + 'ем';
 				}
 				break;
 			case 6:
 				// nom pl
-				if (declension == 0){
-					output = stem + 'а'
+				if (declension%4 == 0){
+					// this applies to declension 0 (neut) and 4 (neut -мя)
+					output = stem + 'а';
 				} else {
 					output = stem + 'ы';
 				}
@@ -291,24 +353,15 @@ class Noun {
 				break;
 			case 8:
 				// gen pl
-				if (declension == 1 && stem[stem.length-2] == 'ц') {
-					output = stem + 'ев'
-				} else if (declension != 2 && ['ь','ч','ж','ш','щ','й'].includes(stem[stem.length-1])){
-					output = stem + 'ей'
+				if (declension == 4) {
+					output = stem.slice(0,-2) + 'ё' + stem.slice(-1);
+				} else if (declension == 3 || declension == 1 && 'ьйчжшщ'.includes(stem[stem.length-1])){
+					output = stem + 'ей';
 				} else if (declension == 1){
-					output = stem + 'ов'
+					output = stem + 'ов';
 				} else {
 					// remove the vowel from the end, but two consonants in a row are not allowed at word end
-					if (stem.substr(stem.length-2) == 'ьй'){
-						output = stem.substr(0,stem.length-2) + 'ей';
-					} else if (stem[stem.length-1] == 'й' && !vowels.includes(stem[stem.length-2])) {
-						output = stem.substr(0,stem.length-1) + 'ь';
-					} else if ( (!vowels.includes(stem[stem.length-1])) && !vowels.concat('с').includes(stem[stem.length-2]) ) {
-						const epenthetic = ('шчь'.includes(stem[stem.length-2])) ? 'е' : 'о';
-						output = stem.substr(0,stem.length-1) + epenthetic + stem[stem.length-1];
-					} else {
-						output = stem;
-					}
+					output = epenthesize(stem);
 				}
 				break;
 			case 9:
@@ -324,21 +377,7 @@ class Noun {
 				return this.decline(3,1) + 'и'
 				break;
 		}
-		
-		output = output.replace(/[йь]а/,'я');
-		output = output.replace(/[йь]е/,'е');
-		output = output.replace(/[йь]о/,'ё');
-		output = output.replace(/[йь]у/,'ю');
-		output = output.replace(/[йь]ы/,'и');
-		
-		output = output.replace('гы','ги');
-		output = output.replace('кы','ки');
-		output = output.replace('хы','хи');
-		output = output.replace('шы','ши');
-		output = output.replace('щы','щи');
-		output = output.replace('жы','жи');
-		output = output.replace('чы','чи');
-		
+		output = phonotactics(output);
 		output = stressify(output, stress);
 		
 		return output;

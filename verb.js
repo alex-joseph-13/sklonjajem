@@ -273,7 +273,7 @@ class PerfectiveVerb {
 
 
 
-class ImperfectiveVerb extends PerfectiveVerb {
+class ImperfectVerb extends PerfectiveVerb {
 	
 	//persons: 0=1s, 1=2s, 2=3s, 3=1p, 4=2p, 5=3p
 	present(person){
@@ -427,7 +427,7 @@ class EnglishVerb {
 		const base = this.base;
 		const L = base.length;
 		
-		if (base[L-1] == 'e'){
+		if (base[L-1] == 'e' && base[L-2] != 'e'){
 			return base.substr(0,L-1) + 'ing';
 		}
 		if (base.substr(L-2,2) == "ie"){
@@ -435,6 +435,10 @@ class EnglishVerb {
 		}
 		if (base[L-1] == 'c' && englishVowels.includes(base[L-2])){
 			return base + "king";
+		}
+		if (base.slice(-2) == 'er') {
+			// an exception to the below rule
+			return base + 'ing';
 		}
 		if (englishDoublingConsonants.includes(base[L-1]) && englishVowels.includes(base[L-2]) && ! englishVowels.includes(base[L-3])){
 			return base + base[L-1] + "ing";

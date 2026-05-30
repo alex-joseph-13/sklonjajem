@@ -16,6 +16,7 @@ function prepForm(prep, noun) {
 
 
 class Exercise {
+	englishLemma;
 	russianLemma;
 	englishSentence;
 	englishWord;
@@ -27,7 +28,8 @@ class Exercise {
 class NounExercise {
 	constructor(noun, nounCase, number) {
 		this.russianLemma = noun;
-		this.englishWord = noun.translation.num(number);
+		this.englishLemma = noun.translation;
+		this.englishWord = this.englishLemma.num(number);
 		this.russianWord = noun.decline(nounCase, number);
 		this.details = nounCases[nounCase] + [" singular"," plural"][number];
 	}
@@ -278,7 +280,7 @@ class presentVerbExercise extends VerbExercise {
 		
 		this.russianWord = this.russianLemma.present(person);
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " present (imperfective)";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " present (Imperfect)";
 	}
 }
 
@@ -306,7 +308,7 @@ class futurePerfectiveVerbExercise extends VerbExercise {
 	}
 }
 
-class futureImperfectiveVerbExercise extends VerbExercise {
+class futureImperfectVerbExercise extends VerbExercise {
 	constructor(vPair, person) {
 		super(vPair, person, false);
 		
@@ -317,7 +319,7 @@ class futureImperfectiveVerbExercise extends VerbExercise {
 		this.russianSentence = this.russianSentence.slice(0,-1) + ' ежедне́вно.';
 		
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future (imperfective)";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " future (Imperfect)";
 		
 	}
 }
@@ -352,7 +354,7 @@ class pastPerfectiveVerbExercise extends VerbExercise {
 	}
 }
 
-class pastImperfectiveVerbExercise extends VerbExercise {
+class pastImperfectVerbExercise extends VerbExercise {
 	constructor(vPair, person) {
 		super(vPair, person, false);
 		
@@ -387,7 +389,7 @@ class pastImperfectiveVerbExercise extends VerbExercise {
 		}
 		
 		if(person >= 6) {person = 2};
-		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " past imperfective";
+		this.details = ['1st','2nd','3rd'][person%3] + ' person ' + ['singular','plural'][Math.floor(person/3)] + " past Imperfect";
 		
 	}
 }
@@ -396,6 +398,73 @@ class pastImperfectiveVerbExercise extends VerbExercise {
 // this is needed to determine which type of verb to get after the exercise type is chosen
 presentVerbExercise.isPerfective = false;
 futurePerfectiveVerbExercise.isPerfective = true;
-futureImperfectiveVerbExercise.isPerfective = false;
+futureImperfectVerbExercise.isPerfective = false;
 pastPerfectiveVerbExercise.isPerfective = true;
-pastImperfectiveVerbExercise.isPerfective = false;
+pastImperfectVerbExercise.isPerfective = false;
+
+
+
+
+
+
+
+
+
+
+
+
+class AdjectiveExercise extends Exercise {
+	/*russianLemma;
+	englishSentence;
+	englishWord;
+	russianSentence;
+	russianWord;
+	details;*/
+	
+	constructor(adjective, noun, nounCase, number){
+		super();
+		
+		this.russianLemma = adjective;
+		const gender = (number==1) ? 3 : noun.gender();
+		this.russianWord = adjective.decline(nounCase, gender, noun.animate);
+		this.englishWord = adjective.translation;
+		
+		const templateList = nounExercises[nounCase];
+		const template = templateList[Math.floor(Math.random() * templateList.length)];
+		const templateInstance = new template(noun,number);
+		
+		let engPhrase = templateInstance.englishWord;
+		let N;
+		if(engPhrase.includes(N = templateInstance.englishLemma.num(number))){
+			engPhrase = engPhrase.replace(N,"_ "+N);
+		} else {
+			engPhrase = engPhrase.replace(" "," _ ");
+		}
+		
+		if(engPhrase.includes("a _") && englishVowels.includes(this.englishWord[0])){
+			engPhrase.replace("a _","an _");
+		} else if (engPhrase.includes("an _") && !englishVowels.includes(this.englishWord[0])){
+			engPhrase.replace("an _","a _");
+		}
+		
+		this.englishSentence = templateInstance.englishSentence.replace("_",engPhrase);
+		this.russianSentence = templateInstance.russianSentence.replace("_","_ " + templateInstance.russianWord);
+		this.details = templateInstance.details;
+		
+		if(this.russianSentence.includes("об _") && !vowels.includes(this.russianWord[0])){
+			this.russianSentence.replace("об _","о _");
+		} else if (this.russianSentence.includes("о _") && vowels.includes(this.russianWord[0])){
+			this.russianSentence.replace("о _","об _");
+		}
+		if(this.russianSentence.includes("во _") && !'вф'.includes(this.russianWord[0])){
+			this.russianSentence.replace("во _","в _");
+		} else if (this.russianSentence.includes("в _") && 'вф'.includes(this.russianWord[0])){
+			this.russianSentence.replace("в _","во _");
+		}
+		if(this.russianSentence.includes("со _") && 'с' != (this.russianWord[0])){
+			this.russianSentence.replace("со _","с _");
+		} else if (this.russianSentence.includes("с _") && 'с' == (this.russianWord[0])){
+			this.russianSentence.replace("с _","со _");
+		}
+	}
+}

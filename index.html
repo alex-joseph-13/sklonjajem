@@ -10,6 +10,7 @@
 	
 	<script src="noun.js"></script>
 	<script src="verb.js"></script>
+	<script src="adjective.js"></script>
 	<script src="lexicon.js"></script>
 	<script src="exercises.js"></script>
 	<script src="script.js" defer></script>
@@ -22,8 +23,10 @@
 				<li><h1>Склоняем</h1></li>
 			</ul>
 			<ul>
-				<li>
-					<button id=pos_button onclick="switch_pos()">switch to verbs</button>
+				<li id=pos_buttons>
+					<button id=pos_noun onclick="switch_pos('noun')">nouns</button>
+					<button id=pos_verb onclick="switch_pos('verb')" class="secondary">verbs</button>
+					<button id=pos_adj onclick="switch_pos('adjective')" class="secondary">adjectives</button>
 				</li>
 			</ul>
 		</nav>
